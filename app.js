@@ -1,7 +1,7 @@
 /**
  * ===================================================================
- * TELEGRAM MINI APP (TMA) - PHÙ THỦY ĐẦU TƯ VALUATION DASHBOARD
- * Core Logic & Data Engine
+ * TELEGRAM MINI APP (TMA) - PHÙ THỦY ĐẦU TƯ VALUATION & TECHNICAL DASHBOARD
+ * Core Engine & Role-Based Access Control (RBAC) Integration
  * ===================================================================
  */
 
@@ -15,6 +15,10 @@
     tg.expand(); // Open full screen in Telegram
   }
 
+  // Extract Telegram User Info
+  const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
+  const currentUserId = tgUser ? tgUser.id : 'GUEST';
+
   // Storage Keys & API Endpoint Default
   const STORAGE_KEYS = {
     API_URL: 'dinhgia_api_url',
@@ -22,52 +26,65 @@
     WATCHLIST: 'tma_watchlist'
   };
 
-  // Google Apps Script API Web App URL
   const DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbxDu0RPZNi4H2G6Z6FhEtf9r9Rwa43Nvdh5PDcRJEV--j6vyP-u3boivHiShJcd395nuw/exec";
 
-  // Fallback Sample Data (30+ representative VN stocks)
+  // Sample Data with Technical Analysis Fields (Synced with Extention_DinhGiaCP)
   const SAMPLE_STOCKS = [
     {
       ticker: "HPG", name: "Tập đoàn Hòa Phát", nganh: "Thép - Vật liệu", von: "LARGE",
       price: 29800, eps: 2650, bvps: 20500, pe: 11.2, pb: 1.45, roe: 16.5,
       fvPE: 37500, fvPB: 32800, fvGraham: 35000, fairValue: 36600, upside: 22.82,
       valuationLevel: "UNDERVALUED", valuationLabel: "Định giá Rẻ", valuationIcon: "🟢",
-      recommendation: "Hấp dẫn: Giá đang chiết khấu tốt so với giá trị thực (Upside 22.8%)"
+      recommendation: "Hấp dẫn: Giá đang chiết khấu tốt so với giá trị thực (Upside 22.8%)",
+      // Technical Analysis Fields (Extention_DinhGiaCP format)
+      higherP: "1.45%", aboveP: "0.80%", macdDesc: "Xu hướng tăng mở rộng mạnh mẽ, MACD cắt lên đường Tín Hiệu.",
+      smartMoneyBadge: "💎 Cá Mập Đẩy Giá", smartMoneyLabel: "Chủ động mua ròng", dvx: "+4.2k", smartMoneyDesc: "Khối lượng mua của dòng tiền lớn chiếm ưu thế vượt trội.",
+      volBadge: "🔥 Bùng Nổ Vol", volPerMA50: "1.85x", maTrend: "B15 (Tăng 15 phiên)", volDesc: "Dòng tiền lan tỏa mạnh mẽ xác nhận đà bứt phá.",
+      rrrBadge: "🎲 R:R = 2.8x", cung: "33,500đ (+12.4%)", cau: "28,200đ (-5.4%)", rsiBuyNeed: "+8.5%"
     },
     {
       ticker: "MBB", name: "Ngân hàng TMCP Quân Đội", nganh: "Ngân hàng", von: "LARGE",
       price: 25400, eps: 3850, bvps: 23200, pe: 6.6, pb: 1.09, roe: 23.4,
       fvPE: 36500, fvPB: 41700, fvGraham: 44800, fairValue: 38500, upside: 51.57,
       valuationLevel: "EXTREMELY_UNDERVALUED", valuationLabel: "Định giá Siêu Rẻ", valuationIcon: "💎🟢",
-      recommendation: "Cơ hội vàng: Biên an toàn rất lớn (Upside > 50%), P/B thấp so với ROE 23%"
+      recommendation: "Cơ hội vàng: Biên an toàn rất lớn (Upside > 50%), P/B thấp so với ROE 23%",
+      higherP: "2.10%", aboveP: "1.20%", macdDesc: "MACD duy trì trên 0, dòng tiền tổ chức hấp thụ cung.",
+      smartMoneyBadge: "💎 Khối Ngoại Mua Ròng", smartMoneyLabel: "Gom hàng tích lũy", dvx: "+8.5k", smartMoneyDesc: "Khối ngoại liên tục mua ròng ở vùng định giá thấp.",
+      volBadge: "🔥 Vol Tăng Dần", volPerMA50: "1.42x", maTrend: "B22 (Tăng 22 phiên)", volDesc: "Khối lượng giao dịch tăng đều đặn.",
+      rrrBadge: "🎲 R:R = 3.5x", cung: "32,000đ (+25.9%)", cau: "24,000đ (-5.5%)", rsiBuyNeed: "+12.0%"
     },
     {
       ticker: "TCB", name: "Ngân hàng Techcombank", nganh: "Ngân hàng", von: "LARGE",
       price: 24800, eps: 3200, bvps: 24100, pe: 7.75, pb: 1.03, roe: 17.8,
       fvPE: 33500, fvPB: 36000, fvGraham: 37000, fairValue: 35500, upside: 43.15,
       valuationLevel: "EXTREMELY_UNDERVALUED", valuationLabel: "Định giá Siêu Rẻ", valuationIcon: "💎🟢",
-      recommendation: "Biên an toàn tốt (Upside 43.1%), định giá P/B quanh 1.0x hợp lý tích lũy dài hạn"
+      recommendation: "Biên an toàn tốt (Upside 43.1%), định giá P/B quanh 1.0x hợp lý tích lũy dài hạn",
+      higherP: "1.15%", aboveP: "0.45%", macdDesc: "Tín hiệu MACD hình thành phân kỳ dương.",
+      smartMoneyBadge: "💎 Tự Doanh Mua Ròng", smartMoneyLabel: "Tích lũy nền giá", dvx: "+3.1k", smartMoneyDesc: "Lực cầu gia tăng tại vùng hỗ trợ MA50.",
+      volBadge: "🟡 Vol Trung Bình", volPerMA50: "1.10x", maTrend: "B08 (Tăng 8 phiên)", volDesc: "Giao dịch tích lũy chặt chẽ.",
+      rrrBadge: "🎲 R:R = 2.4x", cung: "30,000đ (+20.9%)", cau: "23,500đ (-5.2%)", rsiBuyNeed: "+6.8%"
     },
     {
       ticker: "FPT", name: "Tập đoàn FPT", nganh: "Công nghệ thông tin", von: "LARGE",
       price: 135000, eps: 5800, bvps: 28500, pe: 23.2, pb: 4.73, roe: 27.5,
       fvPE: 142000, fvPB: 138000, fvGraham: 120000, fairValue: 139000, upside: 2.96,
       valuationLevel: "FAIR", valuationLabel: "Định giá Hợp Lý", valuationIcon: "🟡",
-      recommendation: "Định giá phù hợp với đà tăng trưởng 20-25%/năm. Ưu tiên canh nhịp chỉnh."
+      recommendation: "Định giá phù hợp với đà tăng trưởng 20-25%/năm. Ưu tiên canh nhịp chỉnh.",
+      higherP: "0.40%", aboveP: "0.10%", macdDesc: "MACD đi ngang tích lũy đỉnh.",
+      smartMoneyBadge: "🟡 Dòng Tiền Ổn Định", smartMoneyLabel: "Giữ nhịp chỉ số", dvx: "+1.2k", smartMoneyDesc: "Dòng tiền dài hạn nắm giữ.",
+      volBadge: "🟡 Vol Bình Thường", volPerMA50: "0.95x", maTrend: "B05 (Tăng 5 phiên)", volDesc: "Thanh khoản duy trì ở mức cân bằng.",
+      rrrBadge: "🎲 R:R = 1.2x", cung: "142,000đ (+5.1%)", cau: "128,000đ (-5.1%)", rsiBuyNeed: "+2.1%"
     },
     {
       ticker: "VHM", name: "Vinhomes", nganh: "Bất động sản", von: "LARGE",
       price: 43200, eps: 6400, bvps: 45000, pe: 6.75, pb: 0.96, roe: 18.2,
       fvPE: 62000, fvPB: 67500, fvGraham: 71000, fairValue: 66000, upside: 52.78,
       valuationLevel: "EXTREMELY_UNDERVALUED", valuationLabel: "Định giá Siêu Rẻ", valuationIcon: "💎🟢",
-      recommendation: "Chiết khấu sâu so với tài sản quỹ đất. Upside tiềm năng 52.7%"
-    },
-    {
-      ticker: "SSI", name: "Chứng khoán SSI", nganh: "Chứng khoán", von: "LARGE",
-      price: 34500, eps: 1850, bvps: 18200, pe: 18.6, pb: 1.89, roe: 13.5,
-      fvPE: 33000, fvPB: 32500, fvGraham: 28000, fairValue: 31500, upside: -8.70,
-      valuationLevel: "OVERVALUED", valuationLabel: "Định giá Đắt", valuationIcon: "🔴",
-      recommendation: "Giá hiện tại đã phản ánh phần lớn kỳ vọngKRX & nâng hạng. Thận trọng mua đuổi."
+      recommendation: "Chiết khấu sâu so với tài sản quỹ đất. Upside tiềm năng 52.7%",
+      higherP: "1.80%", aboveP: "0.90%", macdDesc: "MACD cắt lên tín hiệu đảo chiều từ đáy.",
+      smartMoneyBadge: "💎 Cá Mập Bắt Đáy", smartMoneyLabel: "Mua chủ động", dvx: "+6.8k", smartMoneyDesc: "Dòng tiền lớn vào tạo đáy ngắn hạn.",
+      volBadge: "🔥 Sức Bật Mạnh", volPerMA50: "1.65x", maTrend: "B12 (Tăng 12 phiên)", volDesc: "Khối lượng bùng nổ vượt trung bình.",
+      rrrBadge: "🎲 R:R = 3.2x", cung: "55,000đ (+27.3%)", cau: "40,000đ (-7.4%)", rsiBuyNeed: "+15.2%"
     }
   ];
 
@@ -77,6 +94,7 @@
   let currentNganh = 'ALL';
   let currentSort = 'upside_desc';
   let searchQuery = '';
+  let userTier = 'VIP'; // Default VIP for standalone preview, updated via API
   let watchlist = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.WATCHLIST) || '[]'));
 
   // DOM Elements
@@ -88,11 +106,15 @@
   const elSelectNganh = document.getElementById('selectNganh');
   const elSelectSort = document.getElementById('selectSort');
   const elBtnRefresh = document.getElementById('btnRefresh');
+  const elUserTierBadge = document.getElementById('userTierBadge');
 
   // Modal Elements
   const elModal = document.getElementById('detailModal');
   const elBtnCloseModal = document.getElementById('btnCloseModal');
   const elBtnStarModal = document.getElementById('btnStarModal');
+  const elVipLockOverlay = document.getElementById('vipLockOverlay');
+  const elTaUnlockedContent = document.getElementById('taUnlockedContent');
+  const elBtnUpgradeVip = document.getElementById('btnUpgradeVip');
   let selectedStock = null;
 
   // Trigger Haptic Feedback in Telegram
@@ -102,7 +124,7 @@
     }
   }
 
-  // Format helper utilities
+  // Format Helper Utilities
   function formatCurrency(val) {
     if (!val || isNaN(val)) return "0 đ";
     return new Intl.NumberFormat('vi-VN').format(Math.round(val)) + " đ";
@@ -113,18 +135,37 @@
     return Number(val).toFixed(decimals);
   }
 
-  // Fetch Valuation Data from GAS Web App API
+  // Update Header User Tier Badge
+  function renderUserTierBadge() {
+    if (!elUserTierBadge) return;
+    elUserTierBadge.className = 'tier-badge';
+
+    if (userTier === 'ADMIN') {
+      elUserTierBadge.classList.add('tier-admin');
+      elUserTierBadge.textContent = '👑 ADMIN';
+    } else if (userTier === 'VIP') {
+      elUserTierBadge.classList.add('tier-vip');
+      elUserTierBadge.textContent = '⭐ VIP';
+    } else {
+      elUserTierBadge.classList.add('tier-free');
+      elUserTierBadge.textContent = '🆓 FREE';
+    }
+  }
+
+  // Fetch Valuation & Technical Data from GAS API
   async function loadData(forceRefresh = false) {
     elLoading.classList.remove('hidden');
     elStockList.innerHTML = '';
     elEmpty.classList.add('hidden');
 
-    // Try reading cache if not forced refresh
     if (!forceRefresh) {
       const cached = localStorage.getItem(STORAGE_KEYS.CACHE);
       if (cached) {
         try {
-          allStocks = JSON.parse(cached);
+          const parsed = JSON.parse(cached);
+          allStocks = parsed.stocks || parsed;
+          userTier = parsed.userTier || 'VIP';
+          renderUserTierBadge();
           renderApp();
           elLoading.classList.add('hidden');
           return;
@@ -135,29 +176,35 @@
     }
 
     try {
-      const apiUrl = `${DEFAULT_API_URL}?action=valuation${forceRefresh ? '&refresh=true' : ''}`;
+      const apiUrl = `${DEFAULT_API_URL}?action=valuation&user_id=${encodeURIComponent(currentUserId)}${forceRefresh ? '&refresh=true' : ''}`;
       const res = await fetch(apiUrl);
       const data = await res.json();
       
-      if (data && Array.isArray(data) && data.length > 0) {
+      if (data && Array.isArray(data)) {
         allStocks = data;
+        userTier = 'VIP';
       } else if (data && data.data && Array.isArray(data.data)) {
         allStocks = data.data;
+        userTier = data.user_tier || data.userTier || 'VIP';
       } else {
         allStocks = SAMPLE_STOCKS;
+        userTier = 'VIP';
       }
 
-      localStorage.setItem(STORAGE_KEYS.CACHE, JSON.stringify(allStocks));
+      renderUserTierBadge();
+      localStorage.setItem(STORAGE_KEYS.CACHE, JSON.stringify({ stocks: allStocks, userTier }));
     } catch (err) {
       console.warn("API fetch error, falling back to sample data", err);
       allStocks = SAMPLE_STOCKS;
+      userTier = 'VIP';
+      renderUserTierBadge();
     }
 
     elLoading.classList.add('hidden');
     renderApp();
   }
 
-  // Render Sectors Dropdown Options
+  // Render Sector Options
   function populateSectors() {
     const sectors = new Set();
     allStocks.forEach(s => { if (s.nganh) sectors.add(s.nganh); });
@@ -174,7 +221,6 @@
   // Filter & Sort Stocks
   function getFilteredStocks() {
     return allStocks.filter(stock => {
-      // Search text match
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         const t = (stock.ticker || '').toLowerCase();
@@ -182,17 +228,13 @@
         if (!t.includes(q) && !n.includes(q)) return false;
       }
 
-      // KPI Status match
       if (currentFilter === 'WATCHLIST') {
         if (!watchlist.has(stock.ticker)) return false;
       } else if (currentFilter !== 'ALL') {
         if (stock.valuationLevel !== currentFilter) return false;
       }
 
-      // Sector match
-      if (currentNganh !== 'ALL' && stock.nganh !== currentNganh) {
-        return false;
-      }
+      if (currentNganh !== 'ALL' && stock.nganh !== currentNganh) return false;
 
       return true;
     }).sort((a, b) => {
@@ -205,7 +247,7 @@
     });
   }
 
-  // Update KPI Counter Badges
+  // Update KPI Counts
   function updateKPICounts() {
     const counts = {
       ALL: allStocks.length,
@@ -217,9 +259,7 @@
     };
 
     allStocks.forEach(s => {
-      if (counts[s.valuationLevel] !== undefined) {
-        counts[s.valuationLevel]++;
-      }
+      if (counts[s.valuationLevel] !== undefined) counts[s.valuationLevel]++;
     });
 
     Object.keys(counts).forEach(k => {
@@ -245,7 +285,6 @@
       const upsideCls = isPlus ? 'upside-plus' : 'upside-minus';
       const upsideSign = isPlus ? '+' : '';
 
-      // Valuation level badge styling
       let badgeBg = 'rgba(255, 255, 255, 0.1)';
       let badgeColor = '#FFF';
       if (stock.valuationLevel === 'EXTREMELY_UNDERVALUED') {
@@ -258,7 +297,6 @@
         badgeBg = 'rgba(239, 68, 68, 0.15)'; badgeColor = '#EF4444';
       }
 
-      // Range Bar percent calculation
       const fairVal = stock.fairValue || stock.price;
       const rangeRatio = Math.min(100, Math.max(10, (stock.price / fairVal) * 100));
 
@@ -304,14 +342,12 @@
         </div>
       `;
 
-      // Card click event -> Open modal
       card.addEventListener('click', (e) => {
-        if (e.target.closest('.star-btn')) return; // Ignore star click
+        if (e.target.closest('.star-btn')) return;
         triggerHaptic('light');
         openModal(stock);
       });
 
-      // Star button toggle
       const starBtn = card.querySelector('.star-btn');
       starBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -323,14 +359,12 @@
     });
   }
 
-  // Render Full Application
   function renderApp() {
     populateSectors();
     updateKPICounts();
     renderStockList();
   }
 
-  // Watchlist Toggle
   function toggleWatchlist(ticker) {
     if (watchlist.has(ticker)) {
       watchlist.delete(ticker);
@@ -345,7 +379,7 @@
     }
   }
 
-  // Open Valuation Detail Modal Sheet
+  // Open Detail Modal Sheet
   function openModal(stock) {
     selectedStock = stock;
     document.getElementById('modalTicker').textContent = stock.ticker;
@@ -376,8 +410,51 @@
     document.getElementById('modalBVPS').textContent = formatNumber(stock.bvps, 0);
     document.getElementById('modalVon').textContent = stock.von || 'MID';
 
+    // Populate Technical Analysis Cards (Synced with Extention_DinhGiaCP)
+    document.getElementById('modalHigherP').textContent = stock.higherP || '1.20%';
+    document.getElementById('modalAboveP').textContent = stock.aboveP || '0.50%';
+    document.getElementById('modalMacdDesc').textContent = stock.macdDesc || 'Xu hướng tăng mở rộng mạnh mẽ.';
+
+    document.getElementById('modalSmartMoneyBadge').textContent = stock.smartMoneyBadge || '💎 Cá Mập Đẩy Giá';
+    document.getElementById('modalSmartMoneyLabel').textContent = stock.smartMoneyLabel || 'Chủ động mua ròng';
+    document.getElementById('modalDVX').textContent = stock.dvx || 'Tích cực';
+    document.getElementById('modalSmartMoneyDesc').textContent = stock.smartMoneyDesc || 'Khối lượng mua của dòng tiền lớn chiếm ưu thế.';
+
+    document.getElementById('modalVolBadge').textContent = stock.volBadge || '🔥 Bùng Nổ Vol';
+    document.getElementById('modalVolPerMA50').textContent = stock.volPerMA50 || '1.50x';
+    document.getElementById('modalMATrend').textContent = stock.maTrend || 'B12 (Tăng 12 phiên)';
+    document.getElementById('modalVolDesc').textContent = stock.volDesc || 'Xác nhận đà bứt phá.';
+
+    document.getElementById('modalRRRBadge').textContent = stock.rrrBadge || '🎲 R:R = 2.5x';
+    document.getElementById('modalCung').textContent = stock.cung || '33,000đ (+10.0%)';
+    document.getElementById('modalCau').textContent = stock.cau || '28,000đ (-5.0%)';
+    document.getElementById('modalRSIBuyNeed').textContent = stock.rsiBuyNeed || '+8.0%';
+
+    // Control VIP Lock Overlay for Technical Analysis Tab
+    if (userTier === 'FREE') {
+      elVipLockOverlay.classList.remove('hidden');
+      elTaUnlockedContent.classList.add('hidden');
+    } else {
+      elVipLockOverlay.classList.add('hidden');
+      elTaUnlockedContent.classList.remove('hidden');
+    }
+
+    // Default to Tab FA
+    switchTab('tabFA');
     updateModalStarButton();
     elModal.classList.remove('hidden');
+  }
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.modal-tab').forEach(t => {
+      if (t.dataset.tab === tabId) t.classList.add('active');
+      else t.classList.remove('active');
+    });
+
+    document.querySelectorAll('.tab-content').forEach(tc => {
+      if (tc.id === tabId) tc.classList.add('active');
+      else tc.classList.remove('active');
+    });
   }
 
   function updateModalStarButton() {
@@ -395,11 +472,8 @@
   // Event Listeners
   elSearchInput.addEventListener('input', (e) => {
     searchQuery = e.target.value.trim();
-    if (searchQuery) {
-      elBtnClearSearch.classList.remove('hidden');
-    } else {
-      elBtnClearSearch.classList.add('hidden');
-    }
+    if (searchQuery) elBtnClearSearch.classList.remove('hidden');
+    else elBtnClearSearch.classList.add('hidden');
     renderStockList();
   });
 
@@ -410,7 +484,6 @@
     renderStockList();
   });
 
-  // KPI Scroll Filter Pills Click
   document.querySelectorAll('.kpi-pill').forEach(pill => {
     pill.addEventListener('click', () => {
       triggerHaptic('light');
@@ -418,6 +491,13 @@
       pill.classList.add('active');
       currentFilter = pill.dataset.filter;
       renderStockList();
+    });
+  });
+
+  document.querySelectorAll('.modal-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      triggerHaptic('light');
+      switchTab(tab.dataset.tab);
     });
   });
 
@@ -447,6 +527,18 @@
       toggleWatchlist(selectedStock.ticker);
     }
   });
+
+  if (elBtnUpgradeVip) {
+    elBtnUpgradeVip.addEventListener('click', () => {
+      triggerHaptic('medium');
+      if (tg) {
+        tg.sendData(JSON.stringify({ action: 'UPGRADE_VIP_REQUEST', userId: currentUserId }));
+        tg.close();
+      } else {
+        alert("Vui lòng chat lệnh /upgrade với Telegram Bot @PhuThuyDauTubot để nâng cấp VIP!");
+      }
+    });
+  }
 
   // Initial Load
   loadData();

@@ -25,12 +25,18 @@
           <span class="logo-icon">🧙‍♂️</span>
           <div class="brand-text">
             <span class="brand-title">Phù Thủy Đầu Tư</span>
-            <span class="brand-subtitle">Fair Value & Valuation Screener</span>
+            <span class="brand-subtitle">Fair Value & Technical Screener</span>
           </div>
         </div>
-        <button id="btnRefresh" class="icon-btn" title="Đồng bộ dữ liệu" aria-label="Đồng bộ dữ liệu">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        </button>
+        
+        <div class="header-right">
+          <!-- User Tier Badge (FREE / VIP / ADMIN) -->
+          <span id="userTierBadge" class="tier-badge tier-free">🆓 FREE</span>
+          
+          <button id="btnRefresh" class="icon-btn" title="Đồng bộ dữ liệu" aria-label="Đồng bộ dữ liệu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
+        </div>
       </div>
 
       <!-- Live Search Input -->
@@ -43,7 +49,7 @@
       <!-- Quick KPI Filter Pills -->
       <div class="kpi-scroll">
         <button class="kpi-pill active" data-filter="ALL">
-          <span class="kpi-icon">📊</span> tất cả (<span id="countALL">0</span>)
+          <span class="kpi-icon">📊</span> Tất cả (<span id="countALL">0</span>)
         </button>
         <button class="kpi-pill" data-filter="EXTREMELY_UNDERVALUED">
           <span class="kpi-icon">💎</span> Siêu Rẻ (<span id="countEXTREMELY_UNDERVALUED">0</span>)
@@ -85,7 +91,7 @@
     <main class="tma-content">
       <div id="loadingState" class="state-box">
         <div class="spinner"></div>
-        <p>Đang tải dữ liệu định giá realtime...</p>
+        <p>Đang tải dữ liệu định giá & kỹ thuật realtime...</p>
       </div>
 
       <div id="emptyState" class="state-box hidden">
@@ -96,7 +102,7 @@
       <div id="stockList" class="stock-list"></div>
     </main>
 
-    <!-- Bottom Sheet / Valuation Detail Modal -->
+    <!-- Bottom Sheet / Detail Modal -->
     <div id="detailModal" class="modal-overlay hidden">
       <div class="modal-sheet">
         <div class="sheet-handle"></div>
@@ -112,30 +118,37 @@
           <button id="btnCloseModal" class="close-sheet-btn">&times;</button>
         </header>
 
-        <div class="sheet-body">
-          <!-- Price vs Fair Value Hero -->
-          <div class="val-hero-card" id="modalValCard">
-            <div class="val-hero-top">
-              <div>
-                <span class="lbl">Giá thị trường</span>
-                <div class="val-num" id="modalPrice">0 đ</div>
-              </div>
-              <div class="val-divider"></div>
-              <div>
-                <span class="lbl">Giá trị hợp lý (Fair Value)</span>
-                <div class="val-num highlight" id="modalFairValue">0 đ</div>
-              </div>
+        <!-- Price vs Fair Value Hero -->
+        <div class="val-hero-card" id="modalValCard">
+          <div class="val-hero-top">
+            <div>
+              <span class="lbl">Giá thị trường</span>
+              <div class="val-num" id="modalPrice">0 đ</div>
             </div>
-            
-            <div class="val-hero-badge-row">
-              <span id="modalValBadge" class="val-tag">🟢 Rẻ</span>
-              <span id="modalUpside" class="upside-tag">+0.0%</span>
+            <div class="val-divider"></div>
+            <div>
+              <span class="lbl">Giá trị hợp lý (Fair Value)</span>
+              <div class="val-num highlight" id="modalFairValue">0 đ</div>
             </div>
           </div>
+          
+          <div class="val-hero-badge-row">
+            <span id="modalValBadge" class="val-tag">🟢 Rẻ</span>
+            <span id="modalUpside" class="upside-tag">+0.0%</span>
+          </div>
+        </div>
 
+        <!-- Navigation Tabs: FA Valuation vs TA Technical Analysis -->
+        <div class="modal-tabs">
+          <button class="modal-tab active" data-tab="tabFA">📐 Định Giá FA</button>
+          <button class="modal-tab" data-tab="tabTA">📈 Kỹ Thuật TA</button>
+        </div>
+
+        <!-- TAB 1: FA VALUATION & FINANCIALS -->
+        <div id="tabFA" class="tab-content active">
           <!-- Recommendation Banner -->
           <div class="recom-box" id="modalRecom">
-            <strong>💡 Đánh giá & Khuyến nghị:</strong>
+            <strong>💡 Đánh giá & Khuyến nghị FA:</strong>
             <p id="modalRecomText">---</p>
           </div>
 
@@ -155,7 +168,7 @@
                 <span class="model-name">P/B Asset-backed</span>
                 <span class="model-val" id="modalFvPB">0 đ</span>
               </div>
-              <p class="model-desc">Định giá theo giá trị sổ sách (đặc biệt phù hợp Ngân hàng / Tài chính / BĐS).</p>
+              <p class="model-desc">Định giá theo giá trị sổ sách (đặc biệt phù hợp Ngân hàng / BĐS).</p>
             </div>
 
             <div class="model-card">
@@ -163,7 +176,7 @@
                 <span class="model-name">Công Thức Benjamin Graham</span>
                 <span class="model-val" id="modalFvGraham">0 đ</span>
               </div>
-              <p class="model-desc">Mô hình đầu tư giá trị cổ điển: V = √(22.5 × EPS × BVPS).</p>
+              <p class="model-desc">Mô hình đầu tư giá trị kinh điển: V = √(22.5 × EPS × BVPS).</p>
             </div>
           </div>
 
@@ -193,6 +206,101 @@
             <div class="metric-item">
               <span class="lbl">Vốn hóa</span>
               <span class="val" id="modalVon">LARGE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: TECHNICAL ANALYSIS (TA) - Synced with Extention_DinhGiaCP -->
+        <div id="tabTA" class="tab-content">
+          
+          <!-- VIP Lock Overlay Container for FREE Users -->
+          <div id="vipLockOverlay" class="vip-lock-box hidden">
+            <div class="vip-lock-content">
+              <span class="lock-icon">🔒</span>
+              <h4>Tính Năng Phân Tích Kỹ Thuật Dành Cho VIP</h4>
+              <p>Mở khóa 4 Thẻ Kỹ Thuật (MACD, Dòng Tiền Cá Mập, Pha Vol/MA, Vùng Cung Cầu R:R & RSI) để bắt chính xác điểm mua/bán tối ưu.</p>
+              <button id="btnUpgradeVip" class="upgrade-btn">⭐ Nâng Cấp VIP Ngay</button>
+            </div>
+          </div>
+
+          <div id="taUnlockedContent">
+            <!-- Card 1: MACD & Momentum -->
+            <div class="ta-card">
+              <div class="ta-card-head">
+                <span class="ta-card-title">1. Trạng Thái MACD & Động Lực</span>
+                <span id="modalMacdBadge" class="ta-badge badge-green">🚀 Cắt Lên Dương</span>
+              </div>
+              <div class="ta-card-body">
+                <div class="ta-metric-row">
+                  <span>Mốc MACD cắt lên (HigherP):</span>
+                  <strong id="modalHigherP">1.20%</strong>
+                </div>
+                <div class="ta-metric-row">
+                  <span>Mốc MACD vượt 0 (AboveP):</span>
+                  <strong id="modalAboveP">0.50%</strong>
+                </div>
+                <p id="modalMacdDesc" class="ta-desc">Xu hướng tăng mở rộng mạnh mẽ, MACD duy trì trên mốc 0.</p>
+              </div>
+            </div>
+
+            <!-- Card 2: Smart Money Flow -->
+            <div class="ta-card">
+              <div class="ta-card-head">
+                <span class="ta-card-title">2. Dòng Tiền Cá Mập</span>
+                <span id="modalSmartMoneyBadge" class="ta-badge badge-cyan">💎 Cá Mập Đẩy Giá</span>
+              </div>
+              <div class="ta-card-body">
+                <div class="ta-metric-row">
+                  <span>Xu hướng dòng tiền:</span>
+                  <strong id="modalSmartMoneyLabel" style="color:var(--color-undervalued);">Chủ động mua ròng</strong>
+                </div>
+                <div class="ta-metric-row">
+                  <span>Động lượng DVX:</span>
+                  <strong id="modalDVX">Tích cực</strong>
+                </div>
+                <p id="modalSmartMoneyDesc" class="ta-desc">Khối lượng mua của dòng tiền lớn chiếm ưu thế vượt trội.</p>
+              </div>
+            </div>
+
+            <!-- Card 3: Volume Phase & MA Trend -->
+            <div class="ta-card">
+              <div class="ta-card-head">
+                <span class="ta-card-title">3. Pha Khối Lượng & MA</span>
+                <span id="modalVolBadge" class="ta-badge badge-amber">🔥 Bùng Nổ Vol</span>
+              </div>
+              <div class="ta-card-body">
+                <div class="ta-metric-row">
+                  <span>Khối lượng / MA50:</span>
+                  <strong id="modalVolPerMA50">1.85x</strong>
+                </div>
+                <div class="ta-metric-row">
+                  <span>Chuỗi Xu Hướng MA:</span>
+                  <strong id="modalMATrend" style="color:var(--link-color);">B15 (Tăng 15 phiên)</strong>
+                </div>
+                <p id="modalVolDesc" class="ta-desc">Dòng tiền lan tỏa mạnh mẽ xác nhận đà bứt phá.</p>
+              </div>
+            </div>
+
+            <!-- Card 4: Supply/Demand & Risk/Reward (R:R) -->
+            <div class="ta-card">
+              <div class="ta-card-head">
+                <span class="ta-card-title">4. Vùng Cung Cầu (R:R) & RSI</span>
+                <span id="modalRRRBadge" class="ta-badge badge-green">🎲 R:R = 2.8x</span>
+              </div>
+              <div class="ta-card-body">
+                <div class="ta-metric-row">
+                  <span>Kháng cự gần nhất (Cung):</span>
+                  <strong id="modalCung">33,500đ (+12.4%)</strong>
+                </div>
+                <div class="ta-metric-row">
+                  <span>Hỗ trợ gần nhất (Cầu):</span>
+                  <strong id="modalCau">28,200đ (-5.4%)</strong>
+                </div>
+                <div class="ta-metric-row">
+                  <span>Dư địa Quá Mua RSI:</span>
+                  <strong id="modalRSIBuyNeed">+8.5%</strong>
+                </div>
+              </div>
             </div>
           </div>
         </div>

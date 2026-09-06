@@ -1,5 +1,5 @@
 /* ===================================================================
-   TELEGRAM MINI APP (TMA) - VALUATION & FAIR VALUE DASHBOARD
+   TELEGRAM MINI APP (TMA) - VALUATION & TECHNICAL DASHBOARD
    Styled using Telegram Theme CSS Variables with Modern Dark Fallbacks
    =================================================================== */
 
@@ -13,7 +13,7 @@
   --button-color: var(--tg-theme-button-color, #2563EB);
   --button-text: var(--tg-theme-button-text-color, #FFFFFF);
 
-  /* Valuation Color Palette */
+  /* Valuation & Technical Color Palette */
   --color-extremely-undervalued: #00E676;
   --color-undervalued: #10B981;
   --color-fair: #F59E0B;
@@ -47,7 +47,7 @@ body {
 }
 
 /* ==========================================
-   HEADER & SEARCH
+   HEADER & USER TIER BADGE
    ========================================== */
 .tma-header {
   position: sticky;
@@ -91,6 +91,41 @@ body {
   color: var(--hint-color);
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* User Tier Badges */
+.tier-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.tier-free {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94A3B8;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.tier-vip {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.3));
+  color: #FBBF24;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.tier-admin {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(126, 34, 206, 0.3));
+  color: #C084FC;
+  border: 1px solid rgba(168, 85, 247, 0.5);
+}
+
 .icon-btn {
   background: var(--secondary-bg);
   border: 1px solid var(--card-border);
@@ -109,7 +144,7 @@ body {
   transform: scale(0.92);
 }
 
-/* Search Input Box */
+/* Search Box */
 .search-box {
   position: relative;
   display: flex;
@@ -377,7 +412,7 @@ body {
 }
 
 /* ==========================================
-   BOTTOM SHEET / MODAL
+   BOTTOM SHEET / MODAL DETAIL
    ========================================== */
 .modal-overlay {
   position: fixed;
@@ -385,7 +420,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
   z-index: 100;
   display: flex;
@@ -403,7 +438,7 @@ body {
 .modal-sheet {
   background: var(--secondary-bg);
   width: 100%;
-  max-height: 88vh;
+  max-height: 90vh;
   border-radius: 20px 20px 0 0;
   padding: 12px 16px 24px;
   overflow-y: auto;
@@ -424,7 +459,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .sheet-ticker-info {
@@ -468,7 +503,7 @@ body {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--card-border);
   border-radius: 14px;
-  padding: 14px;
+  padding: 12px;
   margin-bottom: 12px;
 }
 
@@ -476,7 +511,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .val-divider {
@@ -516,18 +551,178 @@ body {
   font-weight: 700;
 }
 
+/* Modal Tabs Navigation */
+.modal-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.modal-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--hint-color);
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-tab.active {
+  background: var(--button-color);
+  color: var(--button-text);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* ==========================================
+   TECHNICAL ANALYSIS (TA) CARDS
+   ========================================== */
+.ta-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.ta-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ta-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.ta-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.badge-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+}
+
+.badge-cyan {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38BDF8;
+}
+
+.badge-amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+}
+
+.badge-red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+}
+
+.ta-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ta-metric-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--hint-color);
+}
+
+.ta-metric-row strong {
+  color: var(--text-color);
+  font-weight: 700;
+}
+
+.ta-desc {
+  font-size: 11px;
+  color: var(--hint-color);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* ==========================================
+   VIP LOCK OVERLAY CONTAINER
+   ========================================== */
+.vip-lock-box {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px dashed rgba(245, 158, 11, 0.4);
+  border-radius: 14px;
+  padding: 24px 16px;
+  text-align: center;
+  margin: 14px 0;
+}
+
+.lock-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.vip-lock-content h4 {
+  font-size: 15px;
+  color: #FBBF24;
+  margin-bottom: 6px;
+}
+
+.vip-lock-content p {
+  font-size: 12px;
+  color: var(--hint-color);
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+.upgrade-btn {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.upgrade-btn:active {
+  transform: scale(0.95);
+}
+
+/* Recom Box & Metrics Grid */
 .recom-box {
   background: rgba(37, 99, 235, 0.1);
   border: 1px solid rgba(37, 99, 235, 0.2);
   padding: 10px 12px;
   border-radius: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   font-size: 12px;
   line-height: 1.4;
 }
 
 .section-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--hint-color);
   margin-bottom: 8px;
@@ -539,7 +734,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .model-card {
@@ -574,7 +769,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .metric-item {
