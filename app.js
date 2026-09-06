@@ -85,6 +85,28 @@
     }
   ];
 
+  function getMaskedSampleStocks(tier) {
+    if (tier === 'VIP' || tier === 'ADMIN') {
+      return SAMPLE_STOCKS;
+    }
+    return SAMPLE_STOCKS.map(s => Object.assign({}, s, {
+      higherP: "LOCKED_VIP",
+      aboveP: "LOCKED_VIP",
+      macdDesc: "Tính năng Kỹ thuật dành riêng cho tài khoản VIP.",
+      smartMoneyBadge: "🔒 Dành Cho VIP",
+      smartMoneyLabel: "Cần nâng cấp VIP",
+      dvx: "LOCKED",
+      volPerMA50: "LOCKED",
+      maTrend: "LOCKED",
+      cung: "LOCKED",
+      cau: "LOCKED",
+      rsiBuyNeed: "LOCKED",
+      fvPE: 0,
+      fvPB: 0,
+      fvGraham: 0
+    }));
+  }
+
   // State Management
   let allStocks = [];
   let currentFilter = 'ALL';
@@ -180,18 +202,20 @@
       if (cached) {
         try {
           const parsed = JSON.parse(cached);
-          allStocks = parsed.stocks || parsed;
-          if (String(currentUserId) === "723340588" || String(currentUserId) === "1654276250") {
-            userTier = "ADMIN";
-          } else {
-            userTier = parsed.userTier || userTier;
+          const cachedStocks = parsed.stocks || parsed;
+          if (Array.isArray(cachedStocks) && cachedStocks.length > 0) {
+            allStocks = cachedStocks;
+            if (String(currentUserId) === "723340588" || String(currentUserId) === "1654276250") {
+              userTier = "ADMIN";
+            } else {
+              userTier = parsed.userTier || userTier;
+            }
+            renderUserTierBadge();
+            renderApp();
+            elLoading.classList.add('hidden');
+            fetchLiveTier();
+            return;
           }
-          renderUserTierBadge();
-          renderApp();
-          elLoading.classList.add('hidden');
-          // Perform background refresh to sync live permissions
-          fetchLiveTier();
-          return;
         } catch (e) {
           console.warn("Cache parse error", e);
         }
@@ -207,15 +231,15 @@
       const res = await fetch(apiUrl);
       const data = await res.json();
       
-      if (data && data.data && Array.isArray(data.data)) {
+      if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
         allStocks = data.data;
         userTier = data.user_tier || 'FREE';
-      } else if (data && Array.isArray(data)) {
+      } else if (data && Array.isArray(data) && data.length > 0) {
         allStocks = data;
-        userTier = 'VIP';
-      } else {
-        allStocks = SAMPLE_STOCKS;
         userTier = 'FREE';
+      } else {
+        userTier = data && data.user_tier ? data.user_tier : 'FREE';
+        allStocks = getMaskedSampleStocks(userTier);
       }
 
       if (String(currentUserId) === "723340588" || String(currentUserId) === "1654276250") {
@@ -227,11 +251,14 @@
       renderApp();
     } catch (err) {
       console.warn("API fetch error, falling back to sample data", err);
-      allStocks = SAMPLE_STOCKS;
       if (String(currentUserId) === "723340588" || String(currentUserId) === "1654276250") {
         userTier = "ADMIN";
+      } else {
+        userTier = "FREE";
       }
+      allStocks = getMaskedSampleStocks(userTier);
       renderUserTierBadge();
+      renderApp();
     }
 
     elLoading.classList.add('hidden');
