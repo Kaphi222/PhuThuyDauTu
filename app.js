@@ -37,7 +37,8 @@
       higherP: "1.45%", aboveP: "0.80%", macdDesc: "Xu hướng tăng mở rộng mạnh mẽ, MACD cắt lên đường Tín Hiệu.",
       smartMoneyBadge: "💎 Cá Mập Đẩy Giá", smartMoneyLabel: "Chủ động mua ròng", dvx: "+4.2k", smartMoneyDesc: "Khối lượng mua của dòng tiền lớn chiếm ưu thế vượt trội.",
       volBadge: "🔥 Bùng Nổ Vol", volPerMA50: "1.85x", maTrend: "B15 (Tăng 15 phiên)", volDesc: "Dòng tiền lan tỏa mạnh mẽ xác nhận đà bứt phá.",
-      rrrBadge: "🎲 R:R = 2.8x", cung: "33,500đ (+12.4%)", cau: "28,200đ (-5.4%)", rsiBuyNeed: "+8.5%"
+      rrrBadge: "🎲 R:R = 2.8x", cung: "33,500đ (+12.4%)", cau: "28,200đ (-5.4%)", rsiBuyNeed: "+8.5%",
+      telegramSignalCode: "PUSH_ALERT", telegramSignalLabel: "Có Cảnh Báo Push", telegramSignalIcon: "🔔", telegramSignalColor: "#F59E0B"
     },
     {
       ticker: "MBB", name: "Ngân hàng TMCP Quân Đội", nganh: "Ngân hàng", von: "LARGE",
@@ -48,7 +49,8 @@
       higherP: "2.10%", aboveP: "1.20%", macdDesc: "MACD duy trì trên 0, dòng tiền tổ chức hấp thụ cung.",
       smartMoneyBadge: "💎 Khối Ngoại Mua Ròng", smartMoneyLabel: "Gom hàng tích lũy", dvx: "+8.5k", smartMoneyDesc: "Khối ngoại liên tục mua ròng ở vùng định giá thấp.",
       volBadge: "🔥 Vol Tăng Dần", volPerMA50: "1.42x", maTrend: "B22 (Tăng 22 phiên)", volDesc: "Khối lượng giao dịch tăng đều đặn.",
-      rrrBadge: "🎲 R:R = 3.5x", cung: "32,000đ (+25.9%)", cau: "24,000đ (-5.5%)", rsiBuyNeed: "+12.0%"
+      rrrBadge: "🎲 R:R = 3.5x", cung: "32,000đ (+25.9%)", cau: "24,000đ (-5.5%)", rsiBuyNeed: "+12.0%",
+      telegramSignalCode: "GOLDEN_BOT", telegramSignalLabel: "Bot Siêu Mua", telegramSignalIcon: "💎", telegramSignalColor: "#00E676"
     },
     {
       ticker: "TCB", name: "Ngân hàng Techcombank", nganh: "Ngân hàng", von: "LARGE",
@@ -59,7 +61,8 @@
       higherP: "1.15%", aboveP: "0.45%", macdDesc: "Tín hiệu MACD hình thành phân kỳ dương.",
       smartMoneyBadge: "💎 Tự Doanh Mua Ròng", smartMoneyLabel: "Tích lũy nền giá", dvx: "+3.1k", smartMoneyDesc: "Lực cầu gia tăng tại vùng hỗ trợ MA50.",
       volBadge: "🟡 Vol Trung Bình", volPerMA50: "1.10x", maTrend: "B08 (Tăng 8 phiên)", volDesc: "Giao dịch tích lũy chặt chẽ.",
-      rrrBadge: "🎲 R:R = 2.4x", cung: "30,000đ (+20.9%)", cau: "23,500đ (-5.2%)", rsiBuyNeed: "+6.8%"
+      rrrBadge: "🎲 R:R = 2.4x", cung: "30,000đ (+20.9%)", cau: "23,500đ (-5.2%)", rsiBuyNeed: "+6.8%",
+      telegramSignalCode: "GOLDEN_BOT", telegramSignalLabel: "Bot Siêu Mua", telegramSignalIcon: "💎", telegramSignalColor: "#00E676"
     },
     {
       ticker: "FPT", name: "Tập đoàn FPT", nganh: "Công nghệ thông tin", von: "LARGE",
@@ -70,7 +73,8 @@
       higherP: "0.40%", aboveP: "0.10%", macdDesc: "MACD đi ngang tích lũy đỉnh.",
       smartMoneyBadge: "🟡 Dòng Tiền Ổn Định", smartMoneyLabel: "Giữ nhịp chỉ số", dvx: "+1.2k", smartMoneyDesc: "Dòng tiền dài hạn nắm giữ.",
       volBadge: "🟡 Vol Bình Thường", volPerMA50: "0.95x", maTrend: "B05 (Tăng 5 phiên)", volDesc: "Thanh khoản duy trì ở mức cân bằng.",
-      rrrBadge: "🎲 R:R = 1.2x", cung: "142,000đ (+5.1%)", cau: "128,000đ (-5.1%)", rsiBuyNeed: "+2.1%"
+      rrrBadge: "🎲 R:R = 1.2x", cung: "142,000đ (+5.1%)", cau: "128,000đ (-5.1%)", rsiBuyNeed: "+2.1%",
+      telegramSignalCode: "MINI_APP_TOP", telegramSignalLabel: "Top Mini App", telegramSignalIcon: "🚀", telegramSignalColor: "#8B5CF6"
     },
     {
       ticker: "VHM", name: "Vinhomes", nganh: "Bất động sản", von: "LARGE",
@@ -81,7 +85,8 @@
       higherP: "1.80%", aboveP: "0.90%", macdDesc: "MACD cắt lên tín hiệu đảo chiều từ đáy.",
       smartMoneyBadge: "💎 Cá Mập Bắt Đáy", smartMoneyLabel: "Mua chủ động", dvx: "+6.8k", smartMoneyDesc: "Dòng tiền lớn vào tạo đáy ngắn hạn.",
       volBadge: "🔥 Sức Bật Mạnh", volPerMA50: "1.65x", maTrend: "B12 (Tăng 12 phiên)", volDesc: "Khối lượng bùng nổ vượt trung bình.",
-      rrrBadge: "🎲 R:R = 3.2x", cung: "55,000đ (+27.3%)", cau: "40,000đ (-7.4%)", rsiBuyNeed: "+15.2%"
+      rrrBadge: "🎲 R:R = 3.2x", cung: "55,000đ (+27.3%)", cau: "40,000đ (-7.4%)", rsiBuyNeed: "+15.2%",
+      telegramSignalCode: "INLINE_HOT", telegramSignalLabel: "Hot Inline Query", telegramSignalIcon: "⚡", telegramSignalColor: "#06B6D4"
     }
   ];
 
@@ -115,6 +120,7 @@
   let currentMacdFilter = 'ALL';
   let currentSmartMoneyFilter = 'ALL';
   let currentVolFilter = 'ALL';
+  let currentTelegramSignalFilter = 'ALL';
   let searchQuery = '';
   let userTier = 'FREE';
   let watchlist = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.WATCHLIST) || '[]'));
@@ -130,9 +136,22 @@
   const elSelectMacd = document.getElementById('selectMacd');
   const elSelectSmartMoney = document.getElementById('selectSmartMoney');
   const elSelectVol = document.getElementById('selectVol');
+  const elSelectTelegramSignal = document.getElementById('selectTelegramSignal');
+  const elBtnSaveVipPreset = document.getElementById('btnSaveVipPreset');
+  const elActiveFiltersBar = document.getElementById('activeFiltersBar');
+  const elActiveFilterChips = document.getElementById('activeFilterChips');
+  const elBtnClearAllFilters = document.getElementById('btnClearAllFilters');
   const elBtnRefresh = document.getElementById('btnRefresh');
   const elUserTierBadge = document.getElementById('userTierBadge');
   const elBtnAdminPanel = document.getElementById('btnAdminPanel');
+
+  // Admin Analytics Elements (CHỈ DÀNH CHO ADMIN)
+  const elAdminAnalyticsSection = document.getElementById('adminAnalyticsSection');
+  const elBtnToggleAnalytics = document.getElementById('btnToggleAnalytics');
+  const elAnalyticsBody = document.getElementById('analyticsBody');
+  const elDonutChartSvg = document.getElementById('donutChartSvg');
+  const elDonutLegend = document.getElementById('donutLegend');
+  const elBarChartSvg = document.getElementById('barChartSvg');
 
   // Modal Elements
   const elModal = document.getElementById('detailModal');
@@ -314,6 +333,11 @@
         if (!badge.includes('Bùng Nổ') && !badge.includes('Sức Bật')) return false;
       }
 
+      // Telegram Signals Filter
+      if (currentTelegramSignalFilter !== 'ALL') {
+        if (stock.telegramSignalCode !== currentTelegramSignalFilter) return false;
+      }
+
       return true;
     }).sort((a, b) => {
       if (currentSort === 'upside_desc') return (b.upside || 0) - (a.upside || 0);
@@ -349,6 +373,8 @@
     const stocks = getFilteredStocks();
     elStockList.innerHTML = '';
 
+    renderActiveFilterTags();
+
     if (stocks.length === 0) {
       elEmpty.classList.remove('hidden');
       return;
@@ -373,6 +399,10 @@
         badgeBg = 'rgba(239, 68, 68, 0.15)'; badgeColor = '#EF4444';
       }
 
+      const sigIcon = stock.telegramSignalIcon || '📱';
+      const sigLabel = stock.telegramSignalLabel || 'Signal';
+      const sigColor = stock.telegramSignalColor || '#06B6D4';
+
       const fairVal = stock.fairValue || stock.price;
       const rangeRatio = Math.min(100, Math.max(10, (stock.price / fairVal) * 100));
 
@@ -389,32 +419,32 @@
           </button>
         </div>
 
-        <div class="stock-card-body">
-          <div class="metric-col">
-            <span class="lbl">Giá HT</span>
-            <span class="val">${formatCurrency(stock.price)}</span>
+        <div class="company-title">${stock.name || ''}</div>
+
+        <div class="price-val-grid">
+          <div class="pv-box">
+            <span class="pv-label">Giá HT</span>
+            <span class="pv-value">${(stock.price || 0).toLocaleString('vi-VN')} đ</span>
           </div>
-          <div class="metric-col">
-            <span class="lbl">Fair Value</span>
-            <span class="val fv">${formatCurrency(stock.fairValue)}</span>
-          </div>
-          <div class="metric-col">
-            <span class="lbl">Biên Upside</span>
-            <span class="val ${upsideCls}">${upsideSign}${formatNumber(stock.upside)}%</span>
+          <div class="pv-box right">
+            <span class="pv-label">Fair Value</span>
+            <span class="pv-value highlight">${fairVal > 0 ? fairVal.toLocaleString('vi-VN') + ' đ' : 'N/A'}</span>
           </div>
         </div>
 
-        <div class="range-bar-container">
-          <div class="range-bar-fill" style="width: ${rangeRatio}%; background: ${badgeColor}"></div>
+        <div class="upside-row">
+          <span class="upside-lbl">Upside Định Giá:</span>
+          <span class="${upsideCls}">${upsideSign}${(stock.upside || 0).toFixed(1)}%</span>
         </div>
 
         <div class="stock-card-footer">
-          <span class="val-badge" style="background: ${badgeBg}; color: ${badgeColor}">
-            ${stock.valuationIcon || ''} ${stock.valuationLabel || 'N/A'}
+          <span class="val-badge" style="background:${badgeBg}; color:${badgeColor}">
+            ${stock.valuationIcon || ''} ${stock.valuationLabel || ''}
           </span>
-          <span class="pe-pb-info">
-            P/E: <strong>${formatNumber(stock.pe)}</strong> | P/B: <strong>${formatNumber(stock.pb)}</strong> | ROE: <strong>${formatNumber(stock.roe)}%</strong>
+          <span class="val-badge" style="background:${sigColor}22; color:${sigColor}; border:1px solid ${sigColor}44;">
+            ${sigIcon} ${sigLabel}
           </span>
+          <span class="pe-pb-info">P/E: ${stock.pe || 'N/A'} | P/B: ${stock.pb || 'N/A'}</span>
         </div>
       `;
 
@@ -557,7 +587,190 @@
       openVipPromptModal();
       return 'ALL';
     }
+    triggerHaptic('light');
     return selectEl.value;
+  }
+
+  // Active Filter Tags Renderer
+  function renderActiveFilterTags() {
+    if (!elActiveFilterChips || !elActiveFiltersBar) return;
+
+    const chips = [];
+
+    if (searchQuery) chips.push({ key: 'search', label: `🔍 "${searchQuery}"` });
+    if (currentFilter !== 'ALL') {
+      const pill = document.querySelector(`.kpi-pill[data-filter="${currentFilter}"]`);
+      if (pill) {
+        const text = pill.textContent.trim().replace(/\s*\(\d+\)/, '');
+        chips.push({ key: 'filter', label: text });
+      }
+    }
+    if (currentNganh !== 'ALL') chips.push({ key: 'nganh', label: `Ngành: ${currentNganh}` });
+    if (currentMacdFilter !== 'ALL') {
+      const opt = elSelectMacd ? elSelectMacd.options[elSelectMacd.selectedIndex].text : currentMacdFilter;
+      chips.push({ key: 'macd', label: opt });
+    }
+    if (currentSmartMoneyFilter !== 'ALL') {
+      const opt = elSelectSmartMoney ? elSelectSmartMoney.options[elSelectSmartMoney.selectedIndex].text : currentSmartMoneyFilter;
+      chips.push({ key: 'smartMoney', label: opt });
+    }
+    if (currentVolFilter !== 'ALL') {
+      const opt = elSelectVol ? elSelectVol.options[elSelectVol.selectedIndex].text : currentVolFilter;
+      chips.push({ key: 'vol', label: opt });
+    }
+    if (currentTelegramSignalFilter !== 'ALL') {
+      const opt = elSelectTelegramSignal ? elSelectTelegramSignal.options[elSelectTelegramSignal.selectedIndex].text : currentTelegramSignalFilter;
+      chips.push({ key: 'telegramSignal', label: opt });
+    }
+
+    if (chips.length === 0) {
+      elActiveFiltersBar.classList.add('hidden');
+      elActiveFilterChips.innerHTML = '';
+      return;
+    }
+
+    elActiveFiltersBar.classList.remove('hidden');
+    elActiveFilterChips.innerHTML = chips.map(c => `
+      <div class="active-chip">
+        <span>${c.label}</span>
+        <button class="btn-remove-chip" data-key="${c.key}">✕</button>
+      </div>
+    `).join('');
+
+    elActiveFilterChips.querySelectorAll('.btn-remove-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        triggerHaptic('light');
+        const key = btn.getAttribute('data-key');
+        resetSingleTmaFilter(key);
+      });
+    });
+  }
+
+  function resetSingleTmaFilter(key) {
+    switch(key) {
+      case 'search':
+        searchQuery = '';
+        if (elSearchInput) elSearchInput.value = '';
+        if (elBtnClearSearch) elBtnClearSearch.classList.add('hidden');
+        break;
+      case 'filter':
+        currentFilter = 'ALL';
+        document.querySelectorAll('.kpi-pill').forEach(p => p.classList.toggle('active', p.dataset.filter === 'ALL'));
+        break;
+      case 'nganh':
+        currentNganh = 'ALL';
+        if (elSelectNganh) elSelectNganh.value = 'ALL';
+        break;
+      case 'macd':
+        currentMacdFilter = 'ALL';
+        if (elSelectMacd) elSelectMacd.value = 'ALL';
+        break;
+      case 'smartMoney':
+        currentSmartMoneyFilter = 'ALL';
+        if (elSelectSmartMoney) elSelectSmartMoney.value = 'ALL';
+        break;
+      case 'vol':
+        currentVolFilter = 'ALL';
+        if (elSelectVol) elSelectVol.value = 'ALL';
+        break;
+      case 'telegramSignal':
+        currentTelegramSignalFilter = 'ALL';
+        if (elSelectTelegramSignal) elSelectTelegramSignal.value = 'ALL';
+        break;
+    }
+    renderStockList();
+  }
+
+  // Render Admin Analytics SVG Charts (CHỈ DÀNH CHO ADMIN)
+  function renderAdminAnalyticsCharts() {
+    if (!elAdminAnalyticsSection) return;
+
+    // QUẢN LÝ THỐNG KÊ TELEGRAM APP CHỈ USER ADMIN
+    if (userTier !== 'ADMIN') {
+      elAdminAnalyticsSection.classList.add('hidden');
+      return;
+    }
+
+    elAdminAnalyticsSection.classList.remove('hidden');
+    if (!elDonutChartSvg || !elBarChartSvg) return;
+
+    const featureUsage = [
+      { name: "Mini Apps UI", value: 35, count: "12,840", color: "#00E676", icon: "🚀" },
+      { name: "Bot Inline Mode", value: 28, count: "8,920", color: "#06B6D4", icon: "⚡" },
+      { name: "Push Alerts", value: 18, count: "4,350", color: "#F59E0B", icon: "🔔" },
+      { name: "Custom Keyboards", value: 12, count: "2,910", color: "#8B5CF6", icon: "🎛️" },
+      { name: "Shortcut Launch", value: 7, count: "1,520", color: "#EC4899", icon: "📱" }
+    ];
+
+    const dailyTrends = [
+      { day: "T2", miniApp: 1450, inlineBot: 980, pushAlert: 520 },
+      { day: "T3", miniApp: 1820, inlineBot: 1120, pushAlert: 610 },
+      { day: "T4", miniApp: 2100, inlineBot: 1450, pushAlert: 730 },
+      { day: "T5", miniApp: 1950, inlineBot: 1320, pushAlert: 680 },
+      { day: "T6", miniApp: 2400, inlineBot: 1680, pushAlert: 890 },
+      { day: "T7", miniApp: 1600, inlineBot: 1100, pushAlert: 450 },
+      { day: "CN", miniApp: 1520, inlineBot: 1270, pushAlert: 470 }
+    ];
+
+    // Donut SVG
+    const radius = 60;
+    const cx = 100;
+    const cy = 100;
+    const circumference = 2 * Math.PI * radius;
+    let offset = 0;
+
+    let donutHtml = '';
+    let legendHtml = '';
+
+    featureUsage.forEach(item => {
+      const dash = `${(item.value / 100) * circumference} ${circumference}`;
+      const dashOffset = -offset;
+      offset += (item.value / 100) * circumference;
+
+      donutHtml += `
+        <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${item.color}" stroke-width="20" stroke-dasharray="${dash}" stroke-dashoffset="${dashOffset}">
+          <title>${item.name}: ${item.value}%</title>
+        </circle>
+      `;
+
+      legendHtml += `
+        <div class="legend-item">
+          <div class="legend-left">
+            <span class="legend-dot" style="background:${item.color};"></span>
+            <span class="legend-name">${item.icon} ${item.name}</span>
+          </div>
+          <span class="legend-val">${item.value}%</span>
+        </div>
+      `;
+    });
+
+    elDonutChartSvg.innerHTML = donutHtml;
+    if (elDonutLegend) elDonutLegend.innerHTML = legendHtml;
+
+    // Bar SVG
+    const maxVal = 2600;
+    const svgWidth = 450;
+    const svgHeight = 200;
+    const drawH = 140;
+    const groupW = svgWidth / dailyTrends.length;
+
+    let barHtml = `<line x1="0" y1="165" x2="${svgWidth}" y2="165" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>`;
+
+    dailyTrends.forEach((t, i) => {
+      const gx = i * groupW + 12;
+      const hM = (t.miniApp / maxVal) * drawH;
+      const hB = (t.inlineBot / maxVal) * drawH;
+      const hP = (t.pushAlert / maxVal) * drawH;
+
+      barHtml += `
+        <rect x="${gx}" y="${165 - hM}" width="10" height="${hM}" fill="#00E676" rx="2"></rect>
+        <rect x="${gx + 13}" y="${165 - hB}" width="10" height="${hB}" fill="#06B6D4" rx="2"></rect>
+        <rect x="${gx + 26}" y="${165 - hP}" width="10" height="${hP}" fill="#F59E0B" rx="2"></rect>
+        <text x="${gx + 18}" y="${svgHeight - 8}" fill="#94A3B8" font-size="11" font-weight="700" text-anchor="middle">${t.day}</text>
+      `;
+    });
+
+    elBarChartSvg.innerHTML = barHtml;
   }
 
   // Event Listeners for Screener Filters
@@ -575,6 +788,57 @@
     currentVolFilter = checkTechnicalFilterPermission(elSelectVol, 'currentVolFilter');
     renderStockList();
   });
+
+  if (elSelectTelegramSignal) {
+    elSelectTelegramSignal.addEventListener('change', () => {
+      currentTelegramSignalFilter = checkTechnicalFilterPermission(elSelectTelegramSignal, 'currentTelegramSignalFilter');
+      renderStockList();
+    });
+  }
+
+  if (elBtnClearAllFilters) {
+    elBtnClearAllFilters.addEventListener('click', () => {
+      triggerHaptic('medium');
+      searchQuery = '';
+      if (elSearchInput) elSearchInput.value = '';
+      if (elBtnClearSearch) elBtnClearSearch.classList.add('hidden');
+      currentFilter = 'ALL';
+      document.querySelectorAll('.kpi-pill').forEach(p => p.classList.toggle('active', p.dataset.filter === 'ALL'));
+      currentNganh = 'ALL';
+      if (elSelectNganh) elSelectNganh.value = 'ALL';
+      currentMacdFilter = 'ALL';
+      if (elSelectMacd) elSelectMacd.value = 'ALL';
+      currentSmartMoneyFilter = 'ALL';
+      if (elSelectSmartMoney) elSelectSmartMoney.value = 'ALL';
+      currentVolFilter = 'ALL';
+      if (elSelectVol) elSelectVol.value = 'ALL';
+      currentTelegramSignalFilter = 'ALL';
+      if (elSelectTelegramSignal) elSelectTelegramSignal.value = 'ALL';
+      renderStockList();
+    });
+  }
+
+  if (elBtnSaveVipPreset) {
+    elBtnSaveVipPreset.addEventListener('click', () => {
+      if (userTier === 'FREE') {
+        openVipPromptModal();
+        return;
+      }
+      triggerHaptic('medium');
+      const presetName = prompt('Nhập tên cấu hình Bộ Lọc VIP muốn lưu:', 'Bộ Lọc VIP 1');
+      if (presetName && presetName.trim()) {
+        alert(`🎉 Đã lưu Preset "${presetName.trim()}" dành riêng cho tài khoản VIP/ADMIN!`);
+      }
+    });
+  }
+
+  if (elBtnToggleAnalytics && elAnalyticsBody) {
+    elBtnToggleAnalytics.addEventListener('click', () => {
+      triggerHaptic('light');
+      elAnalyticsBody.classList.toggle('collapsed');
+      elBtnToggleAnalytics.textContent = elAnalyticsBody.classList.contains('collapsed') ? '🔽' : '🔼';
+    });
+  }
 
   elSearchInput.addEventListener('input', (e) => {
     searchQuery = e.target.value.trim();
@@ -665,6 +929,13 @@
       elAdminModal.classList.add('hidden');
     });
   }
+
+  // Re-render Admin Analytics on App render
+  const originalRenderApp = renderApp;
+  renderApp = function() {
+    originalRenderApp();
+    renderAdminAnalyticsCharts();
+  };
 
   // Initial Load
   loadData();

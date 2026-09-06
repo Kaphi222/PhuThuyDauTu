@@ -108,6 +108,17 @@
         </select>
       </div>
 
+      <!-- Technical Screener Filter 4: Telegram Signals (VIP & ADMIN) -->
+      <div class="select-wrapper vip-select-wrapper">
+        <select id="selectTelegramSignal">
+          <option value="ALL">📱 Tín Hiệu Telegram</option>
+          <option value="GOLDEN_BOT">💎 Bot Siêu Mua (Golden Buy)</option>
+          <option value="PUSH_ALERT">🔔 Cảnh Báo Push</option>
+          <option value="MINI_APP_TOP">🚀 Top Mini App</option>
+          <option value="INLINE_HOT">⚡ Hot Inline Query</option>
+        </select>
+      </div>
+
       <div class="select-wrapper">
         <select id="selectSort">
           <option value="upside_desc">Upside Cao ➔ Thấp</option>
@@ -117,7 +128,84 @@
           <option value="roe_desc">ROE Cao ➔ Thấp</option>
         </select>
       </div>
+
+      <!-- Save VIP Preset Button -->
+      <button id="btnSaveVipPreset" class="tma-btn-chip vip-chip" title="Lưu Bộ Lọc VIP">
+        💾 Lưu VIP
+      </button>
     </div>
+
+    <!-- Active Filter Chips Bar -->
+    <div id="activeFiltersBar" class="tma-active-filters hidden">
+      <span class="active-lbl">🏷️ Đang lọc:</span>
+      <div id="activeFilterChips" class="chips-container"></div>
+      <button id="btnClearAllFilters" class="clear-all-text">Xóa hết ✕</button>
+    </div>
+
+    <!-- Section Thống Kê Telegram App Features (DÀNH RIÊNG CHO USER ADMIN) -->
+    <section id="adminAnalyticsSection" class="tma-analytics-card hidden">
+      <div class="analytics-head">
+        <div class="head-title">
+          <span class="admin-badge">👑 ADMIN ANALYTICS ONLY</span>
+          <h3 class="title-text">📊 THỐNG KÊ TÍNH NĂNG TELEGRAM APP</h3>
+        </div>
+        <button id="btnToggleAnalytics" class="icon-toggle-btn" title="Thu gọn / Mở rộng">🔼</button>
+      </div>
+
+      <div id="analyticsBody" class="analytics-body">
+        <!-- KPI Metrics Grid -->
+        <div class="analytics-kpi-grid">
+          <div class="a-kpi-card">
+            <span class="a-icon">🚀</span>
+            <div class="a-info">
+              <span id="statMiniAppViews" class="a-val">12,840</span>
+              <span class="a-lbl">Mini App Views</span>
+            </div>
+          </div>
+          <div class="a-kpi-card">
+            <span class="a-icon">⚡</span>
+            <div class="a-info">
+              <span id="statInlineQueries" class="a-val">8,920</span>
+              <span class="a-lbl">Inline Queries</span>
+            </div>
+          </div>
+          <div class="a-kpi-card">
+            <span class="a-icon">🔔</span>
+            <div class="a-info">
+              <span id="statPushAlerts" class="a-val">4,350</span>
+              <span class="a-lbl">Push Alerts</span>
+            </div>
+          </div>
+          <div class="a-kpi-card">
+            <span class="a-icon">🎯</span>
+            <div class="a-info">
+              <span id="statConversion" class="a-val">68.4%</span>
+              <span class="a-lbl">Signal Conversion</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Container (SVG Vector Donut & Bar Charts) -->
+        <div class="tma-charts-grid">
+          <div class="tma-chart-box">
+            <div class="chart-lbl">⭕ Feature Usage (Telegram App)</div>
+            <div class="svg-wrapper">
+              <svg id="donutChartSvg" viewBox="0 0 200 200" class="tma-svg"></svg>
+              <div class="donut-center-info">
+                <span class="d-val">30,540</span>
+                <span class="d-lbl">Tổng Lượt</span>
+              </div>
+            </div>
+            <div id="donutLegend" class="tma-legend"></div>
+          </div>
+
+          <div class="tma-chart-box">
+            <div class="chart-lbl">📈 Xu Hướng Tương Tác 7 Ngày</div>
+            <svg id="barChartSvg" viewBox="0 0 450 200" class="tma-svg bar-svg"></svg>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Stock Cards Container -->
     <main class="tma-content">
