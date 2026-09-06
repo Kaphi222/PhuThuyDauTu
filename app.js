@@ -148,17 +148,19 @@
     if (!elUserTierBadge) return;
     elUserTierBadge.className = 'tier-badge';
 
+    const displayId = (currentUserId && currentUserId !== 'GUEST') ? ` (${currentUserId})` : '';
+
     if (userTier === 'ADMIN') {
       elUserTierBadge.classList.add('tier-admin');
-      elUserTierBadge.textContent = '👑 ADMIN';
+      elUserTierBadge.textContent = `👑 ADMIN${displayId}`;
       if (elBtnAdminPanel) elBtnAdminPanel.classList.remove('hidden');
     } else if (userTier === 'VIP') {
       elUserTierBadge.classList.add('tier-vip');
-      elUserTierBadge.textContent = '⭐ VIP';
+      elUserTierBadge.textContent = `⭐ VIP${displayId}`;
       if (elBtnAdminPanel) elBtnAdminPanel.classList.add('hidden');
     } else {
       elUserTierBadge.classList.add('tier-free');
-      elUserTierBadge.textContent = '🆓 FREE';
+      elUserTierBadge.textContent = `🆓 FREE${displayId}`;
       if (elBtnAdminPanel) elBtnAdminPanel.classList.add('hidden');
     }
   }
