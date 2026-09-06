@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Phù Thủy Đầu Tư — Telegram Mini App Định Giá Cổ Phiếu</title>
+  
+  <!-- Telegram Web App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="app" class="tma-container">
+    
+    <!-- Top Header -->
+    <header class="tma-header">
+      <div class="brand-row">
+        <div class="brand-logo">
+          <span class="logo-icon">🧙‍♂️</span>
+          <div class="brand-text">
+            <span class="brand-title">Phù Thủy Đầu Tư</span>
+            <span class="brand-subtitle">Fair Value & Valuation Screener</span>
+          </div>
+        </div>
+        <button id="btnRefresh" class="icon-btn" title="Đồng bộ dữ liệu" aria-label="Đồng bộ dữ liệu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+      </div>
+
+      <!-- Live Search Input -->
+      <div class="search-box">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="Tra cứu mã (HPG, MBB, FPT, TCB...)" autocomplete="off">
+        <button id="btnClearSearch" class="clear-btn hidden">&times;</button>
+      </div>
+
+      <!-- Quick KPI Filter Pills -->
+      <div class="kpi-scroll">
+        <button class="kpi-pill active" data-filter="ALL">
+          <span class="kpi-icon">📊</span> tất cả (<span id="countALL">0</span>)
+        </button>
+        <button class="kpi-pill" data-filter="EXTREMELY_UNDERVALUED">
+          <span class="kpi-icon">💎</span> Siêu Rẻ (<span id="countEXTREMELY_UNDERVALUED">0</span>)
+        </button>
+        <button class="kpi-pill" data-filter="UNDERVALUED">
+          <span class="kpi-icon">🟢</span> Rẻ (<span id="countUNDERVALUED">0</span>)
+        </button>
+        <button class="kpi-pill" data-filter="FAIR">
+          <span class="kpi-icon">🟡</span> Hợp Lý (<span id="countFAIR">0</span>)
+        </button>
+        <button class="kpi-pill" data-filter="OVERVALUED">
+          <span class="kpi-icon">🔴</span> Đắt (<span id="countOVERVALUED">0</span>)
+        </button>
+        <button class="kpi-pill" data-filter="WATCHLIST">
+          <span class="kpi-icon">⭐</span> Yêu thích (<span id="countWATCHLIST">0</span>)
+        </button>
+      </div>
+    </header>
+
+    <!-- Secondary Filter Bar -->
+    <div class="sub-filter-bar">
+      <div class="select-wrapper">
+        <select id="selectNganh">
+          <option value="ALL">Tất cả ngành</option>
+        </select>
+      </div>
+      <div class="select-wrapper">
+        <select id="selectSort">
+          <option value="upside_desc">Upside Cao ➔ Thấp</option>
+          <option value="upside_asc">Upside Thấp ➔ Cao</option>
+          <option value="pe_asc">P/E Thấp ➔ Cao</option>
+          <option value="pb_asc">P/B Thấp ➔ Cao</option>
+          <option value="roe_desc">ROE Cao ➔ Thấp</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Stock Cards Container -->
+    <main class="tma-content">
+      <div id="loadingState" class="state-box">
+        <div class="spinner"></div>
+        <p>Đang tải dữ liệu định giá realtime...</p>
+      </div>
+
+      <div id="emptyState" class="state-box hidden">
+        <span class="state-icon">🔍</span>
+        <p>Không tìm thấy mã cổ phiếu phù hợp</p>
+      </div>
+
+      <div id="stockList" class="stock-list"></div>
+    </main>
+
+    <!-- Bottom Sheet / Valuation Detail Modal -->
+    <div id="detailModal" class="modal-overlay hidden">
+      <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        
+        <header class="sheet-header">
+          <div class="sheet-ticker-info">
+            <div class="ticker-badge" id="modalTicker">---</div>
+            <div>
+              <h3 id="modalName" class="sheet-title">Tên Công Ty</h3>
+              <span id="modalNganh" class="sheet-sub">Ngành nghề</span>
+            </div>
+          </div>
+          <button id="btnCloseModal" class="close-sheet-btn">&times;</button>
+        </header>
+
+        <div class="sheet-body">
+          <!-- Price vs Fair Value Hero -->
+          <div class="val-hero-card" id="modalValCard">
+            <div class="val-hero-top">
+              <div>
+                <span class="lbl">Giá thị trường</span>
+                <div class="val-num" id="modalPrice">0 đ</div>
+              </div>
+              <div class="val-divider"></div>
+              <div>
+                <span class="lbl">Giá trị hợp lý (Fair Value)</span>
+                <div class="val-num highlight" id="modalFairValue">0 đ</div>
+              </div>
+            </div>
+            
+            <div class="val-hero-badge-row">
+              <span id="modalValBadge" class="val-tag">🟢 Rẻ</span>
+              <span id="modalUpside" class="upside-tag">+0.0%</span>
+            </div>
+          </div>
+
+          <!-- Recommendation Banner -->
+          <div class="recom-box" id="modalRecom">
+            <strong>💡 Đánh giá & Khuyến nghị:</strong>
+            <p id="modalRecomText">---</p>
+          </div>
+
+          <!-- Valuation Models Breakdown -->
+          <div class="section-title">📊 3 Mô Hình Định Giá Chi Tiết</div>
+          <div class="models-grid">
+            <div class="model-card">
+              <div class="model-header">
+                <span class="model-name">P/E Growth-Adjusted</span>
+                <span class="model-val" id="modalFvPE">0 đ</span>
+              </div>
+              <p class="model-desc">Định giá theo P/E mục tiêu ngành và tốc độ tăng trưởng EPS.</p>
+            </div>
+
+            <div class="model-card">
+              <div class="model-header">
+                <span class="model-name">P/B Asset-backed</span>
+                <span class="model-val" id="modalFvPB">0 đ</span>
+              </div>
+              <p class="model-desc">Định giá theo giá trị sổ sách (đặc biệt phù hợp Ngân hàng / Tài chính / BĐS).</p>
+            </div>
+
+            <div class="model-card">
+              <div class="model-header">
+                <span class="model-name">Công Thức Benjamin Graham</span>
+                <span class="model-val" id="modalFvGraham">0 đ</span>
+              </div>
+              <p class="model-desc">Mô hình đầu tư giá trị cổ điển: V = √(22.5 × EPS × BVPS).</p>
+            </div>
+          </div>
+
+          <!-- Key Financial Ratios Table -->
+          <div class="section-title">📈 Chỉ Số Tài Chính Cốt Lõi</div>
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <span class="lbl">P/E Hiện Tại</span>
+              <span class="val" id="modalPE">0</span>
+            </div>
+            <div class="metric-item">
+              <span class="lbl">P/B Hiện Tại</span>
+              <span class="val" id="modalPB">0</span>
+            </div>
+            <div class="metric-item">
+              <span class="lbl">ROE (%)</span>
+              <span class="val" id="modalROE">0%</span>
+            </div>
+            <div class="metric-item">
+              <span class="lbl">EPS (VNĐ)</span>
+              <span class="val" id="modalEPS">0</span>
+            </div>
+            <div class="metric-item">
+              <span class="lbl">BVPS (VNĐ)</span>
+              <span class="val" id="modalBVPS">0</span>
+            </div>
+            <div class="metric-item">
+              <span class="lbl">Vốn hóa</span>
+              <span class="val" id="modalVon">LARGE</span>
+            </div>
+          </div>
+        </div>
+
+        <footer class="sheet-footer">
+          <button id="btnStarModal" class="tma-btn secondary">
+            <span id="starIcon">⭐</span> <span id="starText">Thêm vào Yêu thích</span>
+          </button>
+        </footer>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
