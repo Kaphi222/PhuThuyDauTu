@@ -1,7 +1,7 @@
 /**
  * ===================================================================
  * TELEGRAM MINI APP (TMA) - PHÙ THỦY ĐẦU TƯ VALUATION & TECHNICAL DASHBOARD
- * Core Engine & Role-Based Access Control (RBAC) Integration
+ * Core Engine, Technical Screener & Server-Backed RBAC Access Control
  * ===================================================================
  */
 
@@ -9,17 +9,15 @@
   // Telegram WebApp SDK Reference
   const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 
-  // Initialize Telegram WebApp UI settings
   if (tg) {
     tg.ready();
-    tg.expand(); // Open full screen in Telegram
+    tg.expand();
   }
 
   // Extract Telegram User Info
   const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
   const currentUserId = tgUser ? tgUser.id : 'GUEST';
 
-  // Storage Keys & API Endpoint Default
   const STORAGE_KEYS = {
     API_URL: 'dinhgia_api_url',
     CACHE: 'tma_valuation_cache',
@@ -28,7 +26,7 @@
 
   const DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbxDu0RPZNi4H2G6Z6FhEtf9r9Rwa43Nvdh5PDcRJEV--j6vyP-u3boivHiShJcd395nuw/exec";
 
-  // Sample Data with Technical Analysis Fields (Synced with Extention_DinhGiaCP)
+  // Sample Data with Technical Analysis Fields
   const SAMPLE_STOCKS = [
     {
       ticker: "HPG", name: "Tập đoàn Hòa Phát", nganh: "Thép - Vật liệu", von: "LARGE",
@@ -36,7 +34,6 @@
       fvPE: 37500, fvPB: 32800, fvGraham: 35000, fairValue: 36600, upside: 22.82,
       valuationLevel: "UNDERVALUED", valuationLabel: "Định giá Rẻ", valuationIcon: "🟢",
       recommendation: "Hấp dẫn: Giá đang chiết khấu tốt so với giá trị thực (Upside 22.8%)",
-      // Technical Analysis Fields (Extention_DinhGiaCP format)
       higherP: "1.45%", aboveP: "0.80%", macdDesc: "Xu hướng tăng mở rộng mạnh mẽ, MACD cắt lên đường Tín Hiệu.",
       smartMoneyBadge: "💎 Cá Mập Đẩy Giá", smartMoneyLabel: "Chủ động mua ròng", dvx: "+4.2k", smartMoneyDesc: "Khối lượng mua của dòng tiền lớn chiếm ưu thế vượt trội.",
       volBadge: "🔥 Bùng Nổ Vol", volPerMA50: "1.85x", maTrend: "B15 (Tăng 15 phiên)", volDesc: "Dòng tiền lan tỏa mạnh mẽ xác nhận đà bứt phá.",
@@ -93,8 +90,11 @@
   let currentFilter = 'ALL';
   let currentNganh = 'ALL';
   let currentSort = 'upside_desc';
+  let currentMacdFilter = 'ALL';
+  let currentSmartMoneyFilter = 'ALL';
+  let currentVolFilter = 'ALL';
   let searchQuery = '';
-  let userTier = 'VIP'; // Default VIP for standalone preview, updated via API
+  let userTier = 'FREE';
   let watchlist = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.WATCHLIST) || '[]'));
 
   // DOM Elements
@@ -105,8 +105,12 @@
   const elBtnClearSearch = document.getElementById('btnClearSearch');
   const elSelectNganh = document.getElementById('selectNganh');
   const elSelectSort = document.getElementById('selectSort');
+  const elSelectMacd = document.getElementById('selectMacd');
+  const elSelectSmartMoney = document.getElementById('selectSmartMoney');
+  const elSelectVol = document.getElementById('selectVol');
   const elBtnRefresh = document.getElementById('btnRefresh');
   const elUserTierBadge = document.getElementById('userTierBadge');
+  const elBtnAdminPanel = document.getElementById('btnAdminPanel');
 
   // Modal Elements
   const elModal = document.getElementById('detailModal');
@@ -114,19 +118,24 @@
   const elBtnStarModal = document.getElementById('btnStarModal');
   const elVipLockOverlay = document.getElementById('vipLockOverlay');
   const elTaUnlockedContent = document.getElementById('taUnlockedContent');
-  const elBtnUpgradeVip = document.getElementById('btnUpgradeVip');
+  const elVipUpgradeModal = document.getElementById('vipUpgradeModal');
+  const elBtnCloseVipPrompt = document.getElementById('btnCloseVipPrompt');
+  const elBtnConfirmUpgrade = document.getElementById('btnConfirmUpgrade');
+  
+  // Admin Modal
+  const elAdminModal = document.getElementById('adminModal');
+  const elBtnCloseAdminModal = document.getElementById('btnCloseAdminModal');
+  const elAdminUserId = document.getElementById('adminUserId');
   let selectedStock = null;
 
-  // Trigger Haptic Feedback in Telegram
   function triggerHaptic(type = 'light') {
     if (tg && tg.HapticFeedback) {
       tg.HapticFeedback.impactOccurred(type);
     }
   }
 
-  // Format Helper Utilities
   function formatCurrency(val) {
-    if (!val || isNaN(val)) return "0 đ";
+    if (!val || isNaN(val) || val === 0) return "0 đ";
     return new Intl.NumberFormat('vi-VN').format(Math.round(val)) + " đ";
   }
 
@@ -135,7 +144,6 @@
     return Number(val).toFixed(decimals);
   }
 
-  // Update Header User Tier Badge
   function renderUserTierBadge() {
     if (!elUserTierBadge) return;
     elUserTierBadge.className = 'tier-badge';
@@ -143,16 +151,18 @@
     if (userTier === 'ADMIN') {
       elUserTierBadge.classList.add('tier-admin');
       elUserTierBadge.textContent = '👑 ADMIN';
+      if (elBtnAdminPanel) elBtnAdminPanel.classList.remove('hidden');
     } else if (userTier === 'VIP') {
       elUserTierBadge.classList.add('tier-vip');
       elUserTierBadge.textContent = '⭐ VIP';
+      if (elBtnAdminPanel) elBtnAdminPanel.classList.add('hidden');
     } else {
       elUserTierBadge.classList.add('tier-free');
       elUserTierBadge.textContent = '🆓 FREE';
+      if (elBtnAdminPanel) elBtnAdminPanel.classList.add('hidden');
     }
   }
 
-  // Fetch Valuation & Technical Data from GAS API
   async function loadData(forceRefresh = false) {
     elLoading.classList.remove('hidden');
     elStockList.innerHTML = '';
@@ -164,7 +174,7 @@
         try {
           const parsed = JSON.parse(cached);
           allStocks = parsed.stocks || parsed;
-          userTier = parsed.userTier || 'VIP';
+          userTier = parsed.userTier || 'FREE';
           renderUserTierBadge();
           renderApp();
           elLoading.classList.add('hidden');
@@ -180,15 +190,15 @@
       const res = await fetch(apiUrl);
       const data = await res.json();
       
-      if (data && Array.isArray(data)) {
+      if (data && data.data && Array.isArray(data.data)) {
+        allStocks = data.data;
+        userTier = data.user_tier || 'FREE';
+      } else if (data && Array.isArray(data)) {
         allStocks = data;
         userTier = 'VIP';
-      } else if (data && data.data && Array.isArray(data.data)) {
-        allStocks = data.data;
-        userTier = data.user_tier || data.userTier || 'VIP';
       } else {
         allStocks = SAMPLE_STOCKS;
-        userTier = 'VIP';
+        userTier = 'FREE';
       }
 
       renderUserTierBadge();
@@ -196,7 +206,7 @@
     } catch (err) {
       console.warn("API fetch error, falling back to sample data", err);
       allStocks = SAMPLE_STOCKS;
-      userTier = 'VIP';
+      userTier = 'FREE';
       renderUserTierBadge();
     }
 
@@ -204,7 +214,6 @@
     renderApp();
   }
 
-  // Render Sector Options
   function populateSectors() {
     const sectors = new Set();
     allStocks.forEach(s => { if (s.nganh) sectors.add(s.nganh); });
@@ -236,6 +245,25 @@
 
       if (currentNganh !== 'ALL' && stock.nganh !== currentNganh) return false;
 
+      // Technical Screener Filtering
+      if (currentMacdFilter === 'MACD_CROSS_UP') {
+        if (!stock.higherP || stock.higherP === 'LOCKED_VIP') return false;
+      } else if (currentMacdFilter === 'MACD_ABOVE_ZERO') {
+        if (!stock.aboveP || stock.aboveP === 'LOCKED_VIP') return false;
+      }
+
+      if (currentSmartMoneyFilter === 'BUY_RONG') {
+        const lbl = stock.smartMoneyLabel || '';
+        if (!lbl.includes('mua ròng') && !lbl.includes('Đẩy Giá')) return false;
+      } else if (currentSmartMoneyFilter === 'DVX_PLUS') {
+        if (!stock.dvx || !stock.dvx.includes('+')) return false;
+      }
+
+      if (currentVolFilter === 'VOL_SPIKE') {
+        const badge = stock.volBadge || '';
+        if (!badge.includes('Bùng Nổ') && !badge.includes('Sức Bật')) return false;
+      }
+
       return true;
     }).sort((a, b) => {
       if (currentSort === 'upside_desc') return (b.upside || 0) - (a.upside || 0);
@@ -247,7 +275,6 @@
     });
   }
 
-  // Update KPI Counts
   function updateKPICounts() {
     const counts = {
       ALL: allStocks.length,
@@ -268,7 +295,6 @@
     });
   }
 
-  // Render Stock Cards List
   function renderStockList() {
     const stocks = getFilteredStocks();
     elStockList.innerHTML = '';
@@ -379,7 +405,6 @@
     }
   }
 
-  // Open Detail Modal Sheet
   function openModal(stock) {
     selectedStock = stock;
     document.getElementById('modalTicker').textContent = stock.ticker;
@@ -399,9 +424,9 @@
     
     document.getElementById('modalRecomText').textContent = stock.recommendation || 'Đánh giá dựa trên tích hợp 3 mô hình P/E, P/B và Graham.';
 
-    document.getElementById('modalFvPE').textContent = formatCurrency(stock.fvPE);
-    document.getElementById('modalFvPB').textContent = formatCurrency(stock.fvPB);
-    document.getElementById('modalFvGraham').textContent = formatCurrency(stock.fvGraham);
+    document.getElementById('modalFvPE').textContent = userTier === 'FREE' ? '🔒 VIP' : formatCurrency(stock.fvPE);
+    document.getElementById('modalFvPB').textContent = userTier === 'FREE' ? '🔒 VIP' : formatCurrency(stock.fvPB);
+    document.getElementById('modalFvGraham').textContent = userTier === 'FREE' ? '🔒 VIP' : formatCurrency(stock.fvGraham);
 
     document.getElementById('modalPE').textContent = formatNumber(stock.pe);
     document.getElementById('modalPB').textContent = formatNumber(stock.pb);
@@ -410,27 +435,26 @@
     document.getElementById('modalBVPS').textContent = formatNumber(stock.bvps, 0);
     document.getElementById('modalVon').textContent = stock.von || 'MID';
 
-    // Populate Technical Analysis Cards (Synced with Extention_DinhGiaCP)
-    document.getElementById('modalHigherP').textContent = stock.higherP || '1.20%';
-    document.getElementById('modalAboveP').textContent = stock.aboveP || '0.50%';
-    document.getElementById('modalMacdDesc').textContent = stock.macdDesc || 'Xu hướng tăng mở rộng mạnh mẽ.';
+    // Technical Analysis Fields
+    document.getElementById('modalHigherP').textContent = stock.higherP || '---';
+    document.getElementById('modalAboveP').textContent = stock.aboveP || '---';
+    document.getElementById('modalMacdDesc').textContent = stock.macdDesc || 'Chi tiết kỹ thuật dành riêng cho tài khoản VIP.';
 
-    document.getElementById('modalSmartMoneyBadge').textContent = stock.smartMoneyBadge || '💎 Cá Mập Đẩy Giá';
-    document.getElementById('modalSmartMoneyLabel').textContent = stock.smartMoneyLabel || 'Chủ động mua ròng';
-    document.getElementById('modalDVX').textContent = stock.dvx || 'Tích cực';
-    document.getElementById('modalSmartMoneyDesc').textContent = stock.smartMoneyDesc || 'Khối lượng mua của dòng tiền lớn chiếm ưu thế.';
+    document.getElementById('modalSmartMoneyBadge').textContent = stock.smartMoneyBadge || '🔒 Dành Cho VIP';
+    document.getElementById('modalSmartMoneyLabel').textContent = stock.smartMoneyLabel || 'Cần nâng cấp VIP';
+    document.getElementById('modalDVX').textContent = stock.dvx || '---';
+    document.getElementById('modalSmartMoneyDesc').textContent = stock.smartMoneyDesc || 'Khối lượng mua của dòng tiền lớn.';
 
-    document.getElementById('modalVolBadge').textContent = stock.volBadge || '🔥 Bùng Nổ Vol';
-    document.getElementById('modalVolPerMA50').textContent = stock.volPerMA50 || '1.50x';
-    document.getElementById('modalMATrend').textContent = stock.maTrend || 'B12 (Tăng 12 phiên)';
+    document.getElementById('modalVolBadge').textContent = stock.volBadge || '🔥 Vol';
+    document.getElementById('modalVolPerMA50').textContent = stock.volPerMA50 || '---';
+    document.getElementById('modalMATrend').textContent = stock.maTrend || '---';
     document.getElementById('modalVolDesc').textContent = stock.volDesc || 'Xác nhận đà bứt phá.';
 
-    document.getElementById('modalRRRBadge').textContent = stock.rrrBadge || '🎲 R:R = 2.5x';
-    document.getElementById('modalCung').textContent = stock.cung || '33,000đ (+10.0%)';
-    document.getElementById('modalCau').textContent = stock.cau || '28,000đ (-5.0%)';
-    document.getElementById('modalRSIBuyNeed').textContent = stock.rsiBuyNeed || '+8.0%';
+    document.getElementById('modalRRRBadge').textContent = stock.rrrBadge || '🎲 R:R';
+    document.getElementById('modalCung').textContent = stock.cung || '---';
+    document.getElementById('modalCau').textContent = stock.cau || '---';
+    document.getElementById('modalRSIBuyNeed').textContent = stock.rsiBuyNeed || '---';
 
-    // Control VIP Lock Overlay for Technical Analysis Tab
     if (userTier === 'FREE') {
       elVipLockOverlay.classList.remove('hidden');
       elTaUnlockedContent.classList.add('hidden');
@@ -439,7 +463,6 @@
       elTaUnlockedContent.classList.remove('hidden');
     }
 
-    // Default to Tab FA
     switchTab('tabFA');
     updateModalStarButton();
     elModal.classList.remove('hidden');
@@ -469,7 +492,40 @@
     selectedStock = null;
   }
 
-  // Event Listeners
+  function openVipPromptModal() {
+    triggerHaptic('medium');
+    elVipUpgradeModal.classList.remove('hidden');
+  }
+
+  function closeVipPromptModal() {
+    elVipUpgradeModal.classList.add('hidden');
+  }
+
+  function checkTechnicalFilterPermission(selectEl, filterVarName) {
+    if (userTier === 'FREE' && selectEl.value !== 'ALL') {
+      selectEl.value = 'ALL';
+      openVipPromptModal();
+      return 'ALL';
+    }
+    return selectEl.value;
+  }
+
+  // Event Listeners for Screener Filters
+  elSelectMacd.addEventListener('change', () => {
+    currentMacdFilter = checkTechnicalFilterPermission(elSelectMacd, 'currentMacdFilter');
+    renderStockList();
+  });
+
+  elSelectSmartMoney.addEventListener('change', () => {
+    currentSmartMoneyFilter = checkTechnicalFilterPermission(elSelectSmartMoney, 'currentSmartMoneyFilter');
+    renderStockList();
+  });
+
+  elSelectVol.addEventListener('change', () => {
+    currentVolFilter = checkTechnicalFilterPermission(elSelectVol, 'currentVolFilter');
+    renderStockList();
+  });
+
   elSearchInput.addEventListener('input', (e) => {
     searchQuery = e.target.value.trim();
     if (searchQuery) elBtnClearSearch.classList.remove('hidden');
@@ -528,15 +584,35 @@
     }
   });
 
-  if (elBtnUpgradeVip) {
-    elBtnUpgradeVip.addEventListener('click', () => {
+  elBtnCloseVipPrompt.addEventListener('click', closeVipPromptModal);
+  elVipUpgradeModal.addEventListener('click', (e) => {
+    if (e.target === elVipUpgradeModal) closeVipPromptModal();
+  });
+
+  document.querySelectorAll('.btnUpgradeVipTrigger, #btnConfirmUpgrade').forEach(btn => {
+    btn.addEventListener('click', () => {
       triggerHaptic('medium');
       if (tg) {
         tg.sendData(JSON.stringify({ action: 'UPGRADE_VIP_REQUEST', userId: currentUserId }));
         tg.close();
       } else {
-        alert("Vui lòng chat lệnh /upgrade với Telegram Bot @PhuThuyDauTubot để nâng cấp VIP!");
+        alert(`Vui lòng chat lệnh /upgrade với Telegram Bot @PhuThuyDauTubot để nâng cấp VIP cho ID ${currentUserId}!`);
       }
+    });
+  });
+
+  // Admin Panel Event Listeners
+  if (elBtnAdminPanel) {
+    elBtnAdminPanel.addEventListener('click', () => {
+      triggerHaptic('medium');
+      if (elAdminUserId) elAdminUserId.textContent = currentUserId;
+      elAdminModal.classList.remove('hidden');
+    });
+  }
+
+  if (elBtnCloseAdminModal) {
+    elBtnCloseAdminModal.addEventListener('click', () => {
+      elAdminModal.classList.add('hidden');
     });
   }
 

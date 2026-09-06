@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Phù Thủy Đầu Tư — Telegram Mini App Định Giá Cổ Phiếu</title>
+  <title>Phù Thủy Đầu Tư — Telegram Mini App Định Giá & Kỹ Thuật</title>
   
   <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -32,6 +32,11 @@
         <div class="header-right">
           <!-- User Tier Badge (FREE / VIP / ADMIN) -->
           <span id="userTierBadge" class="tier-badge tier-free">🆓 FREE</span>
+
+          <!-- Admin Panel Button (Visible for ADMIN tier) -->
+          <button id="btnAdminPanel" class="icon-btn hidden" title="Bảng Quản Lý Admin">
+            👑
+          </button>
           
           <button id="btnRefresh" class="icon-btn" title="Đồng bộ dữ liệu" aria-label="Đồng bộ dữ liệu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
@@ -69,13 +74,40 @@
       </div>
     </header>
 
-    <!-- Secondary Filter Bar -->
+    <!-- Secondary Filter Bar: FA & Technical Screeners -->
     <div class="sub-filter-bar">
       <div class="select-wrapper">
         <select id="selectNganh">
           <option value="ALL">Tất cả ngành</option>
         </select>
       </div>
+
+      <!-- Technical Screener Filter 1: MACD Phase -->
+      <div class="select-wrapper">
+        <select id="selectMacd">
+          <option value="ALL">Tất cả MACD</option>
+          <option value="MACD_CROSS_UP">🚀 MACD Cắt Lên</option>
+          <option value="MACD_ABOVE_ZERO">🟢 MACD Trên 0</option>
+        </select>
+      </div>
+
+      <!-- Technical Screener Filter 2: Smart Money -->
+      <div class="select-wrapper">
+        <select id="selectSmartMoney">
+          <option value="ALL">Dòng Tiền Cá Mập</option>
+          <option value="BUY_RONG">💎 Cá Mập Mua Ròng</option>
+          <option value="DVX_PLUS">📈 DVX Động Lượng (+)</option>
+        </select>
+      </div>
+
+      <!-- Technical Screener Filter 3: Vol Phase -->
+      <div class="select-wrapper">
+        <select id="selectVol">
+          <option value="ALL">Khối Lượng Vol</option>
+          <option value="VOL_SPIKE">🔥 Bùng Nổ Vol (&gt;1.5x)</option>
+        </select>
+      </div>
+
       <div class="select-wrapper">
         <select id="selectSort">
           <option value="upside_desc">Upside Cao ➔ Thấp</option>
@@ -146,13 +178,11 @@
 
         <!-- TAB 1: FA VALUATION & FINANCIALS -->
         <div id="tabFA" class="tab-content active">
-          <!-- Recommendation Banner -->
           <div class="recom-box" id="modalRecom">
             <strong>💡 Đánh giá & Khuyến nghị FA:</strong>
             <p id="modalRecomText">---</p>
           </div>
 
-          <!-- Valuation Models Breakdown -->
           <div class="section-title">📊 3 Mô Hình Định Giá Chi Tiết</div>
           <div class="models-grid">
             <div class="model-card">
@@ -180,7 +210,6 @@
             </div>
           </div>
 
-          <!-- Key Financial Ratios Table -->
           <div class="section-title">📈 Chỉ Số Tài Chính Cốt Lõi</div>
           <div class="metrics-grid">
             <div class="metric-item">
@@ -210,16 +239,15 @@
           </div>
         </div>
 
-        <!-- TAB 2: TECHNICAL ANALYSIS (TA) - Synced with Extention_DinhGiaCP -->
+        <!-- TAB 2: TECHNICAL ANALYSIS (TA) -->
         <div id="tabTA" class="tab-content">
-          
           <!-- VIP Lock Overlay Container for FREE Users -->
           <div id="vipLockOverlay" class="vip-lock-box hidden">
             <div class="vip-lock-content">
               <span class="lock-icon">🔒</span>
               <h4>Tính Năng Phân Tích Kỹ Thuật Dành Cho VIP</h4>
-              <p>Mở khóa 4 Thẻ Kỹ Thuật (MACD, Dòng Tiền Cá Mập, Pha Vol/MA, Vùng Cung Cầu R:R & RSI) để bắt chính xác điểm mua/bán tối ưu.</p>
-              <button id="btnUpgradeVip" class="upgrade-btn">⭐ Nâng Cấp VIP Ngay</button>
+              <p>Dữ liệu chỉ báo MACD, Dòng tiền Cá mập, Vol Spike & Vùng Cung Cầu R:R đã được bảo mật trên server. Vui lòng nâng cấp VIP để mở khóa.</p>
+              <button class="upgrade-btn btnUpgradeVipTrigger">⭐ Nâng Cấp VIP Ngay</button>
             </div>
           </div>
 
@@ -310,6 +338,48 @@
             <span id="starIcon">⭐</span> <span id="starText">Thêm vào Yêu thích</span>
           </button>
         </footer>
+      </div>
+    </div>
+
+    <!-- VIP Upgrade Prompt Modal -->
+    <div id="vipUpgradeModal" class="modal-overlay hidden">
+      <div class="modal-sheet" style="max-height: 50vh;">
+        <div class="sheet-handle"></div>
+        <header class="sheet-header">
+          <h3 class="sheet-title">⭐ Nâng Cấp VIP Phù Thủy Đầu Tư</h3>
+          <button id="btnCloseVipPrompt" class="close-sheet-btn">&times;</button>
+        </header>
+        <div class="sheet-body text-center">
+          <span style="font-size:40px; display:block; margin-bottom:10px;">🔓</span>
+          <p style="font-size:13px; color:var(--hint-color); margin-bottom:16px;">
+            Bộ lọc Kỹ thuật nâng cao (MACD, Cá Mập Mua Ròng, Vol Spike) và 3 Mô hình Định Giá FA chuyên sâu dành riêng cho tài khoản VIP.
+          </p>
+          <button id="btnConfirmUpgrade" class="tma-btn" style="background:linear-gradient(135deg, #F59E0B, #D97706); color:#FFF;">
+            💬 Chat với Bot để Kích Hoạt VIP Ngay
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminModal" class="modal-overlay hidden">
+      <div class="modal-sheet" style="max-height: 70vh;">
+        <div class="sheet-handle"></div>
+        <header class="sheet-header">
+          <h3 class="sheet-title">👑 Bảng Quản Trị Admin</h3>
+          <button id="btnCloseAdminModal" class="close-sheet-btn">&times;</button>
+        </header>
+        <div class="sheet-body">
+          <div class="recom-box">
+            <strong>Thông tin Admin của bạn:</strong>
+            <p>User ID: <strong id="adminUserId">---</strong> | Quyền: <strong style="color:#C084FC;">ADMINISTRATOR</strong></p>
+          </div>
+          <div class="section-title">⚡ Lệnh Kích Hoạt VIP Nhanh Cho User</div>
+          <p style="font-size:12px; color:var(--hint-color); margin-bottom:8px;">Gửi câu lệnh này cho Bot trên Telegram để mở VIP cho bất kỳ ai:</p>
+          <div class="model-card" style="background:rgba(0,0,0,0.3);">
+            <code style="color:#38BDF8; font-size:13px;">/active &lt;USER_ID&gt; 30</code>
+          </div>
+        </div>
       </div>
     </div>
 

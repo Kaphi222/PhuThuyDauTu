@@ -221,16 +221,23 @@ body {
   border-color: var(--button-color);
 }
 
-/* Secondary Filter Bar */
+/* Secondary Filter Bar: Multi-level Dropdowns */
 .sub-filter-bar {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   padding: 8px 14px;
   background: var(--bg-color);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sub-filter-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .select-wrapper {
-  flex: 1;
+  flex: 0 0 auto;
+  min-width: 110px;
 }
 
 .select-wrapper select {
@@ -238,9 +245,10 @@ body {
   background: var(--secondary-bg);
   border: 1px solid var(--card-border);
   color: var(--text-color);
-  padding: 6px 10px;
+  padding: 6px 8px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 600;
   outline: none;
 }
 
@@ -586,9 +594,7 @@ body {
   display: block;
 }
 
-/* ==========================================
-   TECHNICAL ANALYSIS (TA) CARDS
-   ========================================== */
+/* Technical Analysis Cards */
 .ta-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--card-border);
@@ -662,9 +668,7 @@ body {
   font-style: italic;
 }
 
-/* ==========================================
-   VIP LOCK OVERLAY CONTAINER
-   ========================================== */
+/* VIP Lock Overlay Container */
 .vip-lock-box {
   background: rgba(15, 23, 42, 0.85);
   border: 1px dashed rgba(245, 158, 11, 0.4);
@@ -710,7 +714,11 @@ body {
   transform: scale(0.95);
 }
 
-/* Recom Box & Metrics Grid */
+/* Utility Helpers */
+.text-center {
+  text-align: center;
+}
+
 .recom-box {
   background: rgba(37, 99, 235, 0.1);
   border: 1px solid rgba(37, 99, 235, 0.2);
