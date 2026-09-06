@@ -170,16 +170,27 @@
     elStockList.innerHTML = '';
     elEmpty.classList.add('hidden');
 
+    // Check hardcoded Admin ID fallback
+    if (String(currentUserId) === "723340588" || String(currentUserId) === "1654276250") {
+      userTier = "ADMIN";
+    }
+
     if (!forceRefresh) {
       const cached = localStorage.getItem(STORAGE_KEYS.CACHE);
       if (cached) {
         try {
           const parsed = JSON.parse(cached);
           allStocks = parsed.stocks || parsed;
-          userTier = parsed.userTier || 'FREE';
+          if (String(currentUserId) === "723340588" || String(currentUserId) === "1654276250") {
+            userTier = "ADMIN";
+          } else {
+            userTier = parsed.userTier || userTier;
+          }
           renderUserTierBadge();
           renderApp();
           elLoading.classList.add('hidden');
+          // Perform background refresh to sync live permissions
+          fetchLiveTier();
           return;
         } catch (e) {
           console.warn("Cache parse error", e);
@@ -187,6 +198,10 @@
       }
     }
 
+    await fetchLiveTier(forceRefresh);
+  }
+
+  async function fetchLiveTier(forceRefresh = false) {
     try {
       const apiUrl = `${DEFAULT_API_URL}?action=valuation&user_id=${encodeURIComponent(currentUserId)}${forceRefresh ? '&refresh=true' : ''}`;
       const res = await fetch(apiUrl);
@@ -203,17 +218,23 @@
         userTier = 'FREE';
       }
 
+      if (String(currentUserId) === "723340588" || String(currentUserId) === "1654276250") {
+        userTier = "ADMIN";
+      }
+
       renderUserTierBadge();
       localStorage.setItem(STORAGE_KEYS.CACHE, JSON.stringify({ stocks: allStocks, userTier }));
+      renderApp();
     } catch (err) {
       console.warn("API fetch error, falling back to sample data", err);
       allStocks = SAMPLE_STOCKS;
-      userTier = 'FREE';
+      if (String(currentUserId) === "723340588" || String(currentUserId) === "1654276250") {
+        userTier = "ADMIN";
+      }
       renderUserTierBadge();
     }
 
     elLoading.classList.add('hidden');
-    renderApp();
   }
 
   function populateSectors() {
